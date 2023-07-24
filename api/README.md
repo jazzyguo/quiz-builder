@@ -1,0 +1,1 @@
+API built on nodejs/express, sequelize with postgresql, docker
