@@ -4,7 +4,7 @@ import signUp from "@/firebase/auth/signup";
 import { UserCredential } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-import { LoginForm } from "../components/LoginForm";
+import { MemoizedLoginForm } from "../components/LoginForm";
 
 const errorMessages: {
     [key: string]: string
@@ -14,7 +14,7 @@ const errorMessages: {
     "Firebase: Error (auth/email-already-in-use).": "Account already in use",
 };
 
-export const SignUpApp = () => {
+export const SignUpPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [signupError, setSignupError] = useState<null | string>(null);
@@ -37,7 +37,7 @@ export const SignUpApp = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <LoginForm
+            <MemoizedLoginForm
                 onSubmit={onSubmit}
                 setEmail={setEmail}
                 setPassword={setPassword}

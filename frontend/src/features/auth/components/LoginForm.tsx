@@ -8,7 +8,7 @@ type Props = {
     error?: null | string;
 };
 
-export const LoginForm = memo(({
+const LoginForm = ({
     type = "signin",
     setPassword,
     setEmail,
@@ -21,7 +21,7 @@ export const LoginForm = memo(({
             className="flex flex-col"
             onSubmit={onSubmit}
         >
-            <h1>{text}</h1>
+            <h1 className="text-center">{text}</h1>
             <label htmlFor="email">
                 Email
                 <input
@@ -55,4 +55,6 @@ export const LoginForm = memo(({
             </button>
         </form>
     );
-});
+};
+
+export const MemoizedLoginForm = memo(LoginForm)

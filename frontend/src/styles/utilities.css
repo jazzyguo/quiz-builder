@@ -1,0 +1,16 @@
+@tailwind utilities;
+
+@layer utilities {
+    .bg-secondary {
+        background-color: #000;
+    }
+
+    .bg-gray {
+        background-color: #121212;
+    }
+
+    .page-container {
+        max-width: 1024px;
+        margin: auto;
+    }
+}

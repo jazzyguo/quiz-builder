@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { HOME_URL } from "@/lib/consts";
+import { HOME_URL } from "@/config";
 
 const IndexPage = () => {
   const router = useRouter();
@@ -14,7 +14,7 @@ const IndexPage = () => {
   }
 
   return (
-    <div className="text-center">
+    <div className="text-center page-container">
       Log in to get started!
     </div>
   )

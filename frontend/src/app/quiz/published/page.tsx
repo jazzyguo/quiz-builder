@@ -2,6 +2,10 @@
 
 import { withAuth } from "@/components/WithAuth";
 
-const PublishedQuizzesPage = () => <>Published</>
+const PublishedQuizzesPage = () => (
+    <div className="page-container">
+        Published
+    </div>
+)
 
 export default withAuth(PublishedQuizzesPage);

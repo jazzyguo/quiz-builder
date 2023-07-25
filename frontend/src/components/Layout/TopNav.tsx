@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { useAuth } from "@/contexts/AuthContext";
 import { LoginButton, SignupButton } from "@/features/auth";
-import { UserMenuList } from "@/components/UserMenuList";
+import { MemoizedUserMenuList } from "@/components/UserMenuList";
 
 const TopNav = () => {
     const { user } = useAuth();
@@ -13,7 +13,7 @@ const TopNav = () => {
     const isSignupPage = ["/signup", "/signin"].includes(pathname);
 
     return (
-        <div className="px-8 flex items-center justify-between bg-black">
+        <div className="px-8 flex flex-col sm:flex-row items-center justify-between bg-black ">
             <Link
                 href="/"
             >
@@ -21,16 +21,19 @@ const TopNav = () => {
                     Quiz Builder
                 </h1>
             </Link>
-            {!user.uid ? (
-                !isSignupPage && (
-                    <div className="flex ">
-                        <LoginButton className='mr-4' />
-                        <SignupButton />
-                    </div>
-                )
-            ) : (
-                <UserMenuList user={user} />
-            )}
+            <div className="flex mb-6 sm:mb-0">
+                {!user.uid ? (
+                    !isSignupPage && (
+                        <>
+                            <LoginButton className='mr-4' />
+                            <SignupButton />
+                        </>
+                    )
+                ) : (
+                    <MemoizedUserMenuList user={user} />
+                )}
+            </div>
+
         </div>
     );
 };

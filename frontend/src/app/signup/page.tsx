@@ -1,8 +1,12 @@
 "use client"
 
-import { SignUpApp } from "@/features/auth";
+import { SignUpPage } from "@/features/auth";
 import { withoutAuth } from "@/components/WithoutAuth";
 
-const SignupPage = () => <SignUpApp />;
+const Page = () => (
+    <div className="page-container">
+        <SignUpPage />
+    </div>
+)
 
-export default withoutAuth(SignupPage);
+export default withoutAuth(Page);
