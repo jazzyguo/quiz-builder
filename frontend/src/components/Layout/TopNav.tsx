@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 import { useAuth } from "@/contexts/AuthContext";
 import { LoginButton, SignupButton } from "@/features/auth";
+import { UserMenuList } from "@/components/UserMenuList";
 
 const TopNav = () => {
     const { user } = useAuth();
@@ -28,7 +29,7 @@ const TopNav = () => {
                     </div>
                 )
             ) : (
-                <></>
+                <UserMenuList user={user} />
             )}
         </div>
     );

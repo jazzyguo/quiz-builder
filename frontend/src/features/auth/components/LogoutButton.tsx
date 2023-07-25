@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 const auth = getAuth(app);
 
-const LogoutButton = () => {
+export const LogoutButton = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
@@ -16,10 +16,8 @@ const LogoutButton = () => {
 
     return (
         <MenuItem onClick={handleLogout} disableRipple>
-            <LogoutIcon />
+            <LogoutIcon className="mr-2" />
             Logout
         </MenuItem>
     );
 };
-
-export default LogoutButton;

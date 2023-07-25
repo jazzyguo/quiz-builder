@@ -1,6 +1,24 @@
 "use client";
 
-const IndexPage = () => <div>Home</div>
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { HOME_URL } from "@/lib/consts";
+
+const IndexPage = () => {
+  const router = useRouter();
+  const { user } = useAuth();
+
+  if (user.uid) {
+    router.push(HOME_URL);
+    return null;
+  }
+
+  return (
+    <div className="text-center">
+      Log in to get started!
+    </div>
+  )
+}
 
 export default IndexPage
 
