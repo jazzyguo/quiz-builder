@@ -1,8 +1,8 @@
 "use client"
 
 import { SignInApp } from "@/features/auth";
-import { withAuth } from "@/components/WithAuth";
+import { withoutAuth } from "@/components/WithoutAuth";
 
 const SigninPage = () => <SignInApp />;
 
-export default withAuth(SigninPage);
+export default withoutAuth(SigninPage);

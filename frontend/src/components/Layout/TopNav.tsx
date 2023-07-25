@@ -13,7 +13,7 @@ const TopNav = () => {
     const isSignupPage = ["/signup", "/signin"].includes(pathname);
 
     return (
-        <div className="px-8 flex items-center justify-between">
+        <div className="px-8 flex items-center justify-between bg-black">
             <Link
                 href="/"
             >

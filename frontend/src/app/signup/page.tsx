@@ -1,8 +1,8 @@
 "use client"
 
 import { SignUpApp } from "@/features/auth";
-import { withAuth } from "@/components/WithAuth";
+import { withoutAuth } from "@/components/WithoutAuth";
 
 const SignupPage = () => <SignUpApp />;
 
-export default withAuth(SignupPage);
+export default withoutAuth(SignupPage);
