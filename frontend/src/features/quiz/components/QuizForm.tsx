@@ -1,12 +1,11 @@
-import React from "react";
-import { useForm, useWatch, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
     TextField,
-    Checkbox,
     Button,
 } from "@mui/material";
-import { QuizFormData } from "@/types";
-import { MAX_ANSWERS, MAX_QUESTIONS } from "@/config";
+import { Quiz } from "@/types";
+import { MAX_QUESTIONS } from "@/config";
+import { MemoizedQuestion } from './Question'
 
 /**
  * Form functions under these guidelines - 
@@ -16,7 +15,7 @@ import { MAX_ANSWERS, MAX_QUESTIONS } from "@/config";
  *  - Max question / answer limit
  */
 
-const defaultQuizValue: QuizFormData = {
+export const defaultQuizValue: Quiz = {
     title: "",
     isPublished: false,
     questions: [
@@ -27,55 +26,59 @@ const defaultQuizValue: QuizFormData = {
     ],
 }
 
-export const QuizForm = () => {
+type Props = {
+    initialValue?: Quiz
+}
+
+export const QuizForm = ({
+    initialValue,
+}: Props) => {
     const {
         control,
         handleSubmit,
         formState: { errors },
-        setValue,
-    } = useForm<QuizFormData>({
-        defaultValues: defaultQuizValue,
+        register,
+    } = useForm<Quiz>({
+        defaultValues: initialValue || defaultQuizValue,
     });
 
-    const questions = useWatch({
+    const {
+        fields: questions,
+        append: addQuestion,
+        remove: removeQuestion,
+    } = useFieldArray({
         control,
-        name: "questions",
-        defaultValue: defaultQuizValue.questions,
+        name: "questions"
     });
 
-    const onSubmit = (data: QuizFormData) => {
-        console.log(data);
+    const onSaveDraft = (data: Quiz) => {
+        console.log("Saving draft:", data);
     };
 
-    // scroll down to the end of the window when another question is added so the user can see it
-    const handleAddQuestion = () => {
+    const onPublish = (data: Quiz) => {
+        console.log("Publishing:", data);
+    };
+
+    const handleAddQuestion = (): void => {
         if (questions.length < MAX_QUESTIONS) {
-            window.scrollTo(0, 9999);
-            setValue("questions", [
-                ...questions,
-                { text: "", answers: [{ text: "", isCorrect: false }] },
-            ]);
+            addQuestion({
+                text: "",
+                answers: [{ text: "", isCorrect: false }],
+            })
         }
     };
 
-    const handleAddAnswer = (questionIndex: number) => {
-        const currentAnswers = questions[questionIndex].answers;
-        if (currentAnswers.length < MAX_ANSWERS) {
-            currentAnswers.push({ text: "", isCorrect: false });
-            setValue("questions", [...questions]);
+    const handleDeleteQuestion = (questionIndex: number): void => {
+        if (questions.length > 1) {
+            removeQuestion(questionIndex)
         }
-    };
-
-    const toggleAnswerIsCorrect = (questionIndex: number, answerIndex: number) => {
-        const currentIsCorrect = questions[questionIndex].answers[answerIndex].isCorrect
-        setValue(`questions.${questionIndex}.answers.${answerIndex}.isCorrect`, !currentIsCorrect);
     };
 
     const canAddMoreQuestions = questions.length < MAX_QUESTIONS;
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-            <div className="mb-8 w-full">
+        <form className="flex flex-col">
+            <div className="mb-8 w-full p-6 bg-secondary rounded-lg">
                 <Controller
                     name="title"
                     control={control}
@@ -88,74 +91,22 @@ export const QuizForm = () => {
                             required
                             fullWidth
                             error={!!errors.title}
+                            helperText={errors.title?.message}
                         />
                     )}
                 />
             </div>
-            <Controller
-                name="questions"
-                control={control}
-                render={({ field }) => (
-                    field.value.map((question, questionIndex) => {
-                        const currentAnswers = questions[questionIndex].answers;
-                        const canAddMoreAnswers = currentAnswers.length < MAX_ANSWERS
-
-                        return (
-                            <div key={questionIndex} className="bg-secondary mb-6 p-6 rounded-lg">
-                                <Controller
-                                    name={`questions.${questionIndex}.text`}
-                                    control={control}
-                                    defaultValue=""
-                                    rules={{ required: "Question is required." }}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={`Question ${questionIndex + 1}`}
-                                            required
-                                            fullWidth
-                                            sx={{ marginBottom: '1rem' }}
-                                            error={!!errors.questions?.[questionIndex]?.text}
-                                        />
-                                    )}
-                                />
-                                {question.answers.map((_, answerIndex) => (
-                                    <Controller
-                                        key={`${questionIndex}-${answerIndex}`}
-                                        name={`questions.${questionIndex}.answers.${answerIndex}.text`}
-                                        control={control}
-                                        defaultValue=""
-                                        rules={{ required: "Answer is required." }}
-                                        render={({ field }) => (
-                                            <div className="flex mb-4">
-                                                <Checkbox
-                                                    color="primary"
-                                                    checked={questions[questionIndex].answers[answerIndex].isCorrect}
-                                                    onChange={() => toggleAnswerIsCorrect(questionIndex, answerIndex)}
-                                                />
-                                                <TextField
-                                                    {...field}
-                                                    label={`Answer ${answerIndex + 1}`}
-                                                    required
-                                                    fullWidth
-                                                    error={!!errors.questions?.[questionIndex]?.answers?.[answerIndex]?.text}
-                                                />
-                                            </div>
-                                        )}
-                                    />
-                                ))}
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => handleAddAnswer(questionIndex)}
-                                    disabled={!canAddMoreAnswers}
-                                >
-                                    Add Answer
-                                </Button>
-                            </div>
-                        )
-                    })
-                )}
-            />
+            {questions.map((question, questionIndex) => (
+                <MemoizedQuestion
+                    questions={questions}
+                    questionIndex={questionIndex}
+                    key={question.id}
+                    handleDelete={handleDeleteQuestion}
+                    errors={errors}
+                    control={control}
+                    register={register}
+                />
+            ))}
             <div className="sticky bottom-0 flex flex-col bg-gray py-6 z-10">
                 <Button
                     variant="contained"
@@ -172,6 +123,7 @@ export const QuizForm = () => {
                         variant="contained"
                         color="primary"
                         sx={{ marginRight: '1rem' }}
+                        onClick={handleSubmit(onSaveDraft)}
                     >
                         Save Draft
                     </Button>
@@ -179,6 +131,7 @@ export const QuizForm = () => {
                         type="submit"
                         variant="contained"
                         color="primary"
+                        onClick={handleSubmit(onPublish)}
                     >
                         Publish
                     </Button>
