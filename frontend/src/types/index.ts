@@ -7,6 +7,7 @@ export type Quiz = {
 
 export type Question = {
     id?: string;
+    type?: 'single-answer' | 'multiple-answers';
     text: string;
     answers: Answer[];
 };

@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+    quiz-builder-database:
+        image: postgres
+        container_name: quiz-builder-database
+        environment:
+            - POSTGRES_USER=quizbuilder_user
+            - POSTGRES_PASSWORD=quizbuilder_password
+            - POSTGRES_DB=quizbuilder
+        volumes:
+            - database-volume:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
+        networks:
+            - shared-network
+        restart: on-failure
+    quiz-builder-api:
+        depends_on:
+            - quiz-builder-database
+        environment:
+            - NODE_ENV=development
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/app
+        container_name: quiz-builder-api
+        expose:
+            - '4000'
+        ports:
+            - '4000:4000'
+        command: npm run dev
+        networks:
+            - shared-network
+        restart: on-failure
+
+volumes:
+    database-volume:
+
+networks:
+    shared-network:

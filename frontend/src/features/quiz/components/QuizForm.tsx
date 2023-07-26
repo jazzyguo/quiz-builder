@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
     TextField,
@@ -50,6 +51,20 @@ export const QuizForm = ({
         control,
         name: "questions"
     });
+
+    const prevQuestionsLengthRef = useRef(questions.length);
+
+    // compares current questions length with previous length to
+    // capture the point at which a new question is added so that we can scroll the user to view 
+    useEffect(() => {
+        if (questions.length > prevQuestionsLengthRef.current) {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth',
+            });
+        }
+        prevQuestionsLengthRef.current = questions.length;
+    }, [questions])
 
     const onSaveDraft = (data: Quiz) => {
         console.log("Saving draft:", data);

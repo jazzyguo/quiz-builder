@@ -1,4 +1,4 @@
-Built using Typescript, React, Nextjs, Tailwind, React-query, MUI
+Built using Typescript, React, Nextjs, Tailwind, React-query, MUI, Firebase auth
 
 ```
 API_URL =
