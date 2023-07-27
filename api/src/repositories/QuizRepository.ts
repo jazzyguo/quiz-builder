@@ -14,11 +14,13 @@ export class QuizRepository {
         data: Partial<Quiz>,
         transaction?: Transaction
     ): Promise<number> {
-        const [affectedCount]: [affectedCount: number, result?: Quiz[]] =
-            await Quiz.update(data, {
+        const [affectedCount]: [affectedCount: number] = await Quiz.update(
+            data,
+            {
                 where: { id },
                 transaction,
-            });
+            }
+        );
 
         if (affectedCount === 0) {
             throw new Error(`Quiz ${id} not found.`);
@@ -39,19 +41,27 @@ export class QuizRepository {
         return await Quiz.findOne({ where: { id } });
     }
 
-    public static async findByIdWithAnswersIsCorrect(
-        id: string
-    ): Promise<Quiz | null> {
-        return await Quiz.scope('withQuestionsAndAnswersIsCorrect').findOne({
+    public static async findByIdAsOwner(id: string): Promise<Quiz | null> {
+        return await Quiz.scope('owner').findOne({
             where: { id },
         });
     }
 
-    public static async findByIdWithAnswersTextOnly(
-        id: string
+    public static async findByPermalink(
+        permalinkId: string
     ): Promise<Quiz | null> {
-        return await Quiz.scope('withQuestionsAndAnswersTextOnly').findOne({
-            where: { id },
+        return await Quiz.scope('guest').findOne({
+            where: { permalinkId },
         });
+    }
+
+    public static async isUserOwner(userId: string, quizId: string) {
+        const quiz = await Quiz.findOne({
+            where: {
+                id: quizId,
+                userId: userId,
+            },
+        });
+        return !!quiz;
     }
 }

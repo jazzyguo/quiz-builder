@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { QuizService } from '../services/QuizService';
+import { QuizRepository } from '../repositories';
 import { Quiz, Question, Answer } from '../models';
 
 export interface CreateQuizDTO {
@@ -66,5 +67,17 @@ export class QuizController {
                 return res.status(500).json({ error: 'Error deleting quiz.' });
             }
         }
+    }
+
+    public static async getQuiz(req: Request, res: Response) {
+        const { quizId } = req.params;
+
+        const quiz = await QuizRepository.findByIdAsOwner(quizId);
+
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        return res.status(200).json(quiz);
     }
 }

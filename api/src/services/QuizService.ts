@@ -38,9 +38,10 @@ export class QuizService {
             await this.addQuestions(quiz.id, questions, transaction);
 
             await transaction.commit();
-            
-            const quizWithAssociations =
-                await QuizRepository.findByIdWithAnswersIsCorrect(quiz.id);
+
+            const quizWithAssociations = await QuizRepository.findByIdAsOwner(
+                quiz.id
+            );
 
             return quizWithAssociations;
         } catch (error) {
@@ -77,8 +78,9 @@ export class QuizService {
 
             await transaction.commit();
 
-            const quizWithAssociations =
-                await QuizRepository.findByIdWithAnswersIsCorrect(quizId);
+            const quizWithAssociations = await QuizRepository.findByIdAsOwner(
+                quizId
+            );
 
             return quizWithAssociations;
         } catch (error) {

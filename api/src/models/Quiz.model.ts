@@ -21,10 +21,11 @@ interface QuizModelAttributes {
 
 interface QuizCreationAttributes extends QuizModelAttributes {}
 
-// We need 2 scopes, one for editing the quiz (show answer isCorrect)
-// and one for taking the quiz (dont show answer isCorrect)
+// We need 2 scopes, 
+// - one for editing the quiz (show answer isCorrect - only the quiz owner can ever access this scope)
+// - and one for taking the quiz (dont show answer isCorrect)
 @Scopes(() => ({
-    withQuestionsAndAnswersIsCorrect: {
+    owner: {
         include: [
             {
                 model: Question,
@@ -38,7 +39,7 @@ interface QuizCreationAttributes extends QuizModelAttributes {}
             },
         ],
     },
-    withQuestionsAndAnswersTextOnly: {
+    guest: {
         include: [
             {
                 model: Question,

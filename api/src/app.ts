@@ -2,7 +2,7 @@ import cors from 'cors';
 import { json } from 'body-parser';
 import express, { Application } from 'express';
 import errorHandler from 'strong-error-handler';
-import { quizRouter } from './routes';
+import { quizRouter, permalinkRouter } from './routes';
 import admin from 'firebase-admin';
 
 require('dotenv').config();
@@ -18,7 +18,8 @@ export const app: Application = express();
 app.use(cors());
 app.use(json());
 
-app.use(quizRouter);
+app.use('/quiz', quizRouter);
+app.use('/permalink', permalinkRouter);
 
 app.use(
     errorHandler({

@@ -1,11 +1,14 @@
 import express from 'express';
 import { QuizController } from '../controllers/QuizController';
-import { authMiddleware } from '../lib/authMiddleware';
+import { authMiddleware, userIsQuizOwnerMiddleware } from '../lib/middleware';
 
 export const quizRouter = express.Router();
 
+// only accessible by authed owners
 quizRouter.use(authMiddleware);
+quizRouter.use(userIsQuizOwnerMiddleware);
 
-quizRouter.post('/quiz', QuizController.createQuiz);
-quizRouter.patch('/quiz/:quizId', QuizController.updateQuiz);
-quizRouter.delete('/quiz/:quizId', QuizController.deleteQuiz);
+quizRouter.get('/:quizId', QuizController.getQuiz);
+quizRouter.post('/', QuizController.createQuiz);
+quizRouter.patch('/:quizId', QuizController.updateQuiz);
+quizRouter.delete('/:quizId', QuizController.deleteQuiz);
