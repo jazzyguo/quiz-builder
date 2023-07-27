@@ -4,9 +4,11 @@ import {
     TextField,
     Button,
 } from "@mui/material";
+import { FullScreenLoading } from "@/components/FullScreenLoading";
 import { Quiz } from "@/types";
 import { MAX_QUESTIONS } from "@/config";
 import { MemoizedQuestion } from './Question'
+import { useCreateQuiz } from "../api/createQuiz";
 
 /**
  * Form functions under these guidelines - 
@@ -52,6 +54,9 @@ export const QuizForm = ({
         name: "questions"
     });
 
+    const { mutate: createQuiz, isLoading } = useCreateQuiz()
+
+
     const prevQuestionsLengthRef = useRef(questions.length);
 
     // compares current questions length with previous length to
@@ -66,13 +71,14 @@ export const QuizForm = ({
         prevQuestionsLengthRef.current = questions.length;
     }, [questions])
 
-    const onSaveDraft = (data: Quiz) => {
-        console.log("Saving draft:", data);
-    };
+    const submitNewQuiz = async (data: Quiz, publish = false) => {
+        console.log(`${publish ? 'Publishing' : 'Drafting'} quiz`, data);
 
-    const onPublish = (data: Quiz) => {
-        console.log("Publishing:", data);
-    };
+        await createQuiz({
+            ...data,
+            isPublished: publish
+        })
+    }
 
     const handleAddQuestion = useCallback((): void => {
         if (questions.length < MAX_QUESTIONS) {
@@ -93,6 +99,7 @@ export const QuizForm = ({
 
     return (
         <form className="flex flex-col">
+            {isLoading && <FullScreenLoading />}
             <div className="mb-8 w-full p-6 bg-secondary rounded-lg">
                 <Controller
                     name="title"
@@ -138,7 +145,9 @@ export const QuizForm = ({
                         variant="contained"
                         color="primary"
                         sx={{ marginRight: '1rem' }}
-                        onClick={handleSubmit(onSaveDraft)}
+                        onClick={handleSubmit((formData) =>
+                            submitNewQuiz(formData)
+                        )}
                     >
                         Save Draft
                     </Button>
@@ -146,7 +155,9 @@ export const QuizForm = ({
                         type="submit"
                         variant="contained"
                         color="primary"
-                        onClick={handleSubmit(onPublish)}
+                        onClick={handleSubmit((formData) =>
+                            submitNewQuiz(formData, true)
+                        )}
                     >
                         Publish
                     </Button>

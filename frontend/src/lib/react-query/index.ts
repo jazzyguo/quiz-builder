@@ -4,7 +4,6 @@ import {
     UseQueryOptions,
     UseMutationOptions,
     DefaultOptions,
-    UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
 import { PromiseValue } from 'type-fest';
 
@@ -25,12 +24,6 @@ export type QueryConfig<QueryFnType extends (...args: any) => any> = Omit<
     UseQueryOptions<ExtractFnReturnType<QueryFnType>>,
     'queryKey' | 'queryFn'
 >;
-
-export type InfiniteQueryConfig<QueryFnType extends (...args: any) => any> =
-    Omit<
-        UseInfiniteQueryOptions<ExtractFnReturnType<QueryFnType>>,
-        'queryKey' | 'queryFn'
-    >;
 
 export type MutationConfig<MutationFnType extends (...args: any) => any> =
     UseMutationOptions<

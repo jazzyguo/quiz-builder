@@ -11,8 +11,8 @@ import {
     getAuth,
     IdTokenResult,
 } from "firebase/auth";
+import { CircularProgress } from "@mui/material";
 import app from "@/firebase/config";
-import { Loading } from "@/components/Loading";
 
 const auth = getAuth(app);
 
@@ -81,7 +81,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         <AuthContext.Provider value={{ user }}>
             {loading ? (
                 <div className="flex justify-center pt-20">
-                    <Loading />
+                    <CircularProgress />
                 </div>
             ) : (
                 children

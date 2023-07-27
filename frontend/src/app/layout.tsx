@@ -9,6 +9,10 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import { AuthContextProvider } from "@/contexts/AuthContext";
 import { MainLayout } from '@/components/Layout';
 
+import { QueryClientProvider, } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { queryClient } from "@/lib/react-query";
+
 const roboto = Roboto({
     weight: ["300", "400", "500", "700"],
     style: ["normal", "italic"],
@@ -31,13 +35,18 @@ const RootLayout = ({
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <AuthContextProvider>
-                    <MainLayout>
-                        {children}
-                    </MainLayout>
+                    <QueryClientProvider client={queryClient}>
+                        {process.env.NODE_ENV === 'development' &&
+                            <ReactQueryDevtools initialIsOpen={false} />
+                        }
+                        <MainLayout>
+                            {children}
+                        </MainLayout>
+                    </QueryClientProvider>
                 </AuthContextProvider>
             </ThemeProvider>
         </body>
-    </html>
+    </html >
 )
 
 export default RootLayout
