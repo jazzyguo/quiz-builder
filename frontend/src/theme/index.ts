@@ -8,6 +8,13 @@ const components = {
             },
         },
     },
+    MuiTab: {
+        styleOverrides: {
+            root: {
+                fontWeight: 'bold',
+            },
+        },
+    },
 };
 
 export const darkTheme = createTheme({

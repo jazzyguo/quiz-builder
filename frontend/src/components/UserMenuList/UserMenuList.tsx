@@ -7,8 +7,7 @@ import Divider from "@mui/material/Divider";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from '@mui/icons-material/Add';
-import ModeIcon from '@mui/icons-material/Mode';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 
 import { User } from "firebase/auth";
 import { LogoutButton } from "@/features/auth";
@@ -68,23 +67,13 @@ const UserMenuList = ({ user }: Props) => {
                 </MenuItem>
                 <MenuItem
                     onClick={() => {
-                        router.push("/quiz/drafts");
-                        handleClose();
-                    }}
-                    disableRipple
-                >
-                    <ModeIcon className="mr-2" />
-                    Drafts
-                </MenuItem>
-                <MenuItem
-                    onClick={() => {
                         router.push("/quiz/published");
                         handleClose();
                     }}
                     disableRipple
                 >
-                    <DoneAllIcon className="mr-2" />
-                    Published
+                    <FormatListBulletedIcon className="mr-2" />
+                    Quizzes
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
                 <LogoutButton />

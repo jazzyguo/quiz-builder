@@ -79,7 +79,10 @@ const Question = ({
                 rounded-lg 
                 relative 
                 ${canDeleteQuestions && 'pt-14'}
-                ${atLeastOneAnswerIsCorrectError && 'border border-solid border-red-500'}
+                ${atLeastOneAnswerIsCorrectError
+                    ? 'border border-solid border-red-500'
+                    : 'border-box'
+                }
             `}
         >
             {canDeleteQuestions &&

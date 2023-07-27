@@ -103,7 +103,7 @@ export const QuizForm = ({
     return (
         <form className="flex flex-col">
             {isLoading && <FullScreenLoading />}
-            <div className="mb-8 w-full p-6 bg-secondary rounded-lg">
+            <div className="mb-8 w-full">
                 <Controller
                     name="title"
                     control={control}
@@ -117,6 +117,11 @@ export const QuizForm = ({
                             fullWidth
                             error={!!errors.title}
                             helperText={errors.title?.message}
+                            inputProps={{
+                                style: {
+                                    background: 'black',
+                                }
+                            }}
                         />
                     )}
                 />

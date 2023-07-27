@@ -1,5 +1,6 @@
 export type Quiz = {
     id?: string;
+    permalinkId?: string;
     title: string;
     questions: Question[];
     isPublished: boolean;

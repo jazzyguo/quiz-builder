@@ -80,8 +80,11 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return (
         <AuthContext.Provider value={{ user }}>
             {loading ? (
-                <div className="flex justify-center pt-20">
-                    <CircularProgress />
+                <div className="loading-container">
+                    <CircularProgress
+                        // account for topnav not present during this render
+                        sx={{ marginTop: '120px' }}
+                    />
                 </div>
             ) : (
                 children
