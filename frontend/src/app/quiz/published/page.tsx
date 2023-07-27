@@ -2,10 +2,10 @@
 
 import { withAuth } from "@/components/WithAuth";
 
-const PublishedQuizzesPage = () => (
-    <div>
-        Published
-    </div>
+import { PublishedQuizzesPage } from "@/features/quiz";
+
+const Page = () => (
+    <PublishedQuizzesPage />
 )
 
-export default withAuth(PublishedQuizzesPage);
+export default withAuth(Page);

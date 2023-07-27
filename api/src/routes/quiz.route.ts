@@ -16,6 +16,41 @@ quizRouter.use(userIsQuizOwnerMiddleware);
 
 /**
  * @swagger
+ * /quiz/all:
+ *   get:
+ *     summary: Get all quizzes, sorts by updatedAt DESC
+ *     tags: [Quiz]
+ *     parameters:
+ *       - in: query
+ *         name: isPublished
+ *         schema:
+ *           type: boolean
+ *         description: Returns only the published quizzes
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/QuizWithCorrect'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+quizRouter.get('/all', QuizController.getQuizzes);
+
+/**
+ * @swagger
  * /quiz/:quizId:
  *   get:
  *     summary: Get a quiz by ID, will return the correct answers
@@ -56,41 +91,6 @@ quizRouter.use(userIsQuizOwnerMiddleware);
  *                   type: string
  */
 quizRouter.get('/:quizId', QuizController.getQuiz);
-
-/**
- * @swagger
- * /quiz/all:
- *   get:
- *     summary: Get all quizzes, sorts by updatedAt DESC
- *     tags: [Quiz]
- *     parameters:
- *       - in: query
- *         name: isPublished
- *         schema:
- *           type: boolean
- *         description: Returns only the published quizzes
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Successful response
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/QuizWithCorrect'
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- */
-quizRouter.get('/all', QuizController.getQuizzes);
 
 /**
  * @swagger

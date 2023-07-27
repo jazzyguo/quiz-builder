@@ -4,6 +4,8 @@ import {
     TextField,
     Button,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
+
 import { FullScreenLoading } from "@/components/FullScreenLoading";
 import { Quiz } from "@/types";
 import { MAX_QUESTIONS } from "@/config";
@@ -36,6 +38,8 @@ type Props = {
 export const QuizForm = ({
     initialValue,
 }: Props) => {
+    const router = useRouter()
+
     const {
         control,
         handleSubmit,
@@ -56,7 +60,6 @@ export const QuizForm = ({
 
     const { mutate: createQuiz, isLoading } = useCreateQuiz()
 
-
     const prevQuestionsLengthRef = useRef(questions.length);
 
     // compares current questions length with previous length to
@@ -73,11 +76,11 @@ export const QuizForm = ({
 
     const submitNewQuiz = async (data: Quiz, publish = false) => {
         console.log(`${publish ? 'Publishing' : 'Drafting'} quiz`, data);
-
         await createQuiz({
             ...data,
             isPublished: publish
         })
+        router.push(`/quiz/${publish ? 'published' : 'drafts'}`)
     }
 
     const handleAddQuestion = useCallback((): void => {
