@@ -3,7 +3,7 @@
 import { withAuth } from "@/components/WithAuth";
 
 const PublishedQuizzesPage = () => (
-    <div className="page-container">
+    <div>
         Published
     </div>
 )

@@ -9,7 +9,8 @@ import { withAuth } from "@/components/WithAuth";
  * else populate QuizForm with the initialValues
  */
 const Page = () => (
-    <div className="page-container">
+    // mb -2rem to account for the sticky bottom which has pb-8
+    <div className="mb-[-2rem]">
         Edit
     </div>
 )

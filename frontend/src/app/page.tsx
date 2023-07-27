@@ -14,7 +14,7 @@ const IndexPage = () => {
   }
 
   return (
-    <div className="text-center page-container">
+    <div className="text-center">
       Log in to get started!
     </div>
   )

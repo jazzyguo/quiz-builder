@@ -3,7 +3,7 @@
 import { withAuth } from "@/components/WithAuth";
 
 const Page = () => (
-    <div className="page-container">
+    <div>
         Drafts
     </div>
 )

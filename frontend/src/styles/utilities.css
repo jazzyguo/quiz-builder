@@ -8,9 +8,4 @@
     .bg-gray {
         background-color: #121212;
     }
-
-    .page-container {
-        max-width: 1024px;
-        margin: auto;
-    }
 }

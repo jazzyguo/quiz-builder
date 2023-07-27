@@ -1,5 +1,5 @@
-import { memo } from 'react'
-import { Control, useFieldArray, FieldErrors, useWatch } from "react-hook-form";
+import { memo, useCallback, useMemo } from 'react'
+import { Control, useFieldArray, useWatch, Merge, FieldError, FieldErrorsImpl } from "react-hook-form";
 import {
     TextField,
     Checkbox,
@@ -13,7 +13,7 @@ type Props = {
     questions: Question[];
     questionIndex: number;
     handleDelete: (index: number) => void;
-    errors: FieldErrors<Quiz>;
+    errors: Merge<FieldError, FieldErrorsImpl<Question>>;
     control: Control<Quiz, object>;
     register: any;
 }
@@ -28,45 +28,59 @@ const Question = ({
 }: Props) => {
     const canDeleteQuestions = questions.length > 1
 
+    const answerFieldName: `questions.${number}.answers` = `questions.${questionIndex}.answers`
+
     const {
         fields: answerFields,
         append: addAnswer,
         remove: removeAnswer,
-        update: updateAnswer,
     } = useFieldArray({
         control,
-        name: `questions.${questionIndex}.answers`,
+        name: answerFieldName,
     });
 
     const answers = useWatch({
         control,
-        name: `questions.${questionIndex}.answers`,
+        name: answerFieldName,
     })
 
     const canAddMoreAnswers = answers.length < MAX_ANSWERS
     const canDeleteAnswers = answers.length > 1
 
-    const handleAddAnswer = (): void => {
+    const handleAddAnswer = useCallback((): void => {
         if (answers.length < MAX_ANSWERS) {
             addAnswer({ text: "", isCorrect: false });
         }
-    };
+    }, [answers]);
 
     const handleDeleteAnswer = (answerIndex: number): void => {
         removeAnswer(answerIndex)
     };
 
-    const toggleAnswerIsCorrect = (answerIndex: number) => {
-        const currentAnswer = answers[answerIndex]
-        updateAnswer(answerIndex, {
-            ...currentAnswer,
-            isCorrect: !currentAnswer.isCorrect,
-        })
-    };
+    const validateAtLeastOneAnswerIsCorrect = useMemo(
+        () => !!answers.some((answer) => answer.isCorrect) ? undefined : 'At least one answer is required',
+        [answers]
+    );
+
+    // checks that form error for above validation exists
+    const atLeastOneAnswerIsCorrectError: FieldError | undefined = (
+        // @ts-ignore
+        (errors?.answers || []).find((answerError) =>
+            answerError?.isCorrect
+        )?.isCorrect
+    )
 
     return (
         <div
-            className={`bg-secondary mb-6 p-6 rounded-lg relative ${canDeleteQuestions && 'pt-14'}`}
+            className={`
+                bg-secondary 
+                mb-6 
+                p-6 
+                rounded-lg 
+                relative 
+                ${canDeleteQuestions && 'pt-14'}
+                ${atLeastOneAnswerIsCorrectError && 'border border-solid border-red-500'}
+            `}
         >
             {canDeleteQuestions &&
                 <CloseIcon
@@ -86,14 +100,14 @@ const Question = ({
             <TextField
                 {...register(
                     `questions.${questionIndex}.text`,
-                    { required: 'Question is required.' }
+                    { required: 'Question is required' }
                 )}
                 label={`Question ${questionIndex + 1}`}
                 required
                 fullWidth
                 sx={{ marginBottom: '1rem' }}
-                error={!!errors.questions?.[questionIndex]?.text}
-                helperText={errors.questions?.[questionIndex]?.text?.message}
+                error={!!errors?.text}
+                helperText={errors?.text?.message}
             />
             {answerFields.map((answer, answerIndex) => (
                 <div
@@ -102,19 +116,21 @@ const Question = ({
                 >
                     <Checkbox
                         color="primary"
-                        checked={answer.isCorrect}
-                        onChange={() => toggleAnswerIsCorrect(answerIndex)}
+                        {...register(
+                            `${answerFieldName}.${answerIndex}.isCorrect`,
+                            { validate: () => validateAtLeastOneAnswerIsCorrect }
+                        )}
                     />
                     <TextField
                         {...register(
-                            `questions.${questionIndex}.answers.${answerIndex}.text`,
+                            `${answerFieldName}.${answerIndex}.text`,
                             { required: 'Answer is required.' }
                         )}
                         label={`Answer ${answerIndex + 1}`}
                         required
                         fullWidth
-                        error={!!errors.questions?.[questionIndex]?.answers?.[answerIndex]?.text}
-                        helperText={errors.questions?.[questionIndex]?.answers?.[answerIndex]?.text?.message}
+                        error={!!errors?.answers?.[answerIndex]?.text}
+                        helperText={errors?.answers?.[answerIndex]?.text?.message}
                     />
                     {canDeleteAnswers &&
                         <CloseIcon
@@ -131,6 +147,12 @@ const Question = ({
                     }
                 </div>
             ))}
+            {/* Error messaging for at least one answer isCorrect required */}
+            {atLeastOneAnswerIsCorrectError &&
+                <div className="text-xs text-red-500 mb-4">
+                    {atLeastOneAnswerIsCorrectError.message}
+                </div>
+            }
             <Button
                 variant="contained"
                 color="primary"

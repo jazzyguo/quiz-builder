@@ -4,7 +4,7 @@ import { SignUpPage } from "@/features/auth";
 import { withoutAuth } from "@/components/WithoutAuth";
 
 const Page = () => (
-    <div className="page-container">
+    <div>
         <SignUpPage />
     </div>
 )

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
     TextField,
@@ -74,22 +74,22 @@ export const QuizForm = ({
         console.log("Publishing:", data);
     };
 
-    const handleAddQuestion = (): void => {
+    const handleAddQuestion = useCallback((): void => {
         if (questions.length < MAX_QUESTIONS) {
             addQuestion({
                 text: "",
                 answers: [{ text: "", isCorrect: false }],
             })
         }
-    };
+    }, [questions]);
 
-    const handleDeleteQuestion = (questionIndex: number): void => {
+    const handleDeleteQuestion = useCallback((questionIndex: number): void => {
         if (questions.length > 1) {
             removeQuestion(questionIndex)
         }
-    };
+    }, [questions]);
 
-    const canAddMoreQuestions = questions.length < MAX_QUESTIONS;
+    const canAddMoreQuestions = questions.length < MAX_QUESTIONS
 
     return (
         <form className="flex flex-col">
@@ -117,12 +117,12 @@ export const QuizForm = ({
                     questionIndex={questionIndex}
                     key={question.id}
                     handleDelete={handleDeleteQuestion}
-                    errors={errors}
+                    errors={errors.questions?.[questionIndex] || {}}
                     control={control}
                     register={register}
                 />
             ))}
-            <div className="sticky bottom-0 flex flex-col bg-gray py-6 z-10">
+            <div className="sticky bottom-0 flex flex-col bg-gray pt-6 pb-8 z-10">
                 <Button
                     variant="contained"
                     color="primary"
