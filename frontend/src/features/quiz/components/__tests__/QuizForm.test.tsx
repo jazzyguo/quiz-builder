@@ -2,8 +2,22 @@ import { render, screen } from '@testing-library/react';
 import { defaultQuizValue, QuizForm } from '../QuizForm'
 import { MAX_QUESTIONS, MAX_ANSWERS } from '@/config';
 
+// @ts-ignore
 const defaultQuestion = defaultQuizValue.questions[0]
+// @ts-ignore
 const defaultAnswer = defaultQuestion.answers[0]
+
+jest.mock('../../api/createQuiz', () => ({
+    useCreateQuiz: () => ({
+        mutate: jest.fn(),
+    }),
+}));
+
+jest.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: jest.fn(),
+    }),
+}));
 
 test('Should not be allowed to delete the question if it only has one', () => {
     render(

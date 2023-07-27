@@ -17,7 +17,7 @@ const CTAStyles = {
 }
 
 export const QuizListItem = ({ quiz }: Props) => {
-    const { isPublished } = quiz
+    const { isPublished, id, permalinkId, title, } = quiz
     return (
         <div
             className="mb-8 bg-secondary p-6 border-box flex justify-between"
@@ -27,21 +27,21 @@ export const QuizListItem = ({ quiz }: Props) => {
                     <Tooltip title="Edit Quiz">
                         <EditIcon
                             sx={CTAStyles}
-                            onClick={() => console.log('edit', quiz.id)}
+                            onClick={() => console.log('edit', id)}
                             data-testid="edit-quiz"
                         />
                     </Tooltip>
                     :
                     <BookmarkAddedIcon data-testid="published-quiz" />
                 }
-                <h3 className="my-0 ml-4">{quiz.title}</h3>
+                <h3 className="my-0 ml-4">{title}</h3>
             </div>
             <div className="flex">
-                {isPublished &&
+                {isPublished && permalinkId &&
                     <Tooltip title="Click to copy share url">
                         <div
                             className="flex hover:opacity-50 cursor-pointer mr-8"
-                            onClick={() => console.log('copy url', quiz.permalinkId)}
+                            onClick={() => console.log('copy url', permalinkId)}
                         >
                             <span className="mr-2">Share url</span>
                             <ContentCopyIcon
@@ -54,7 +54,7 @@ export const QuizListItem = ({ quiz }: Props) => {
                 <Tooltip title="Delete Quiz">
                     <CloseIcon
                         sx={CTAStyles}
-                        onClick={() => console.log('deleting', quiz.id)}
+                        onClick={() => console.log('deleting', id)}
                         data-testid="delete-quiz"
                     />
                 </Tooltip>
