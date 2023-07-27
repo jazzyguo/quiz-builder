@@ -35,7 +35,7 @@ quizRouter.use(userIsQuizOwnerMiddleware);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Quiz'
+ *               $ref: '#/components/schemas/QuizWithCorrect'
  *       404:
  *         description: Quiz not found
  *         content:
@@ -61,7 +61,7 @@ quizRouter.get('/:quizId', QuizController.getQuiz);
  * @swagger
  * /quiz/all:
  *   get:
- *     summary: Get all quizzes
+ *     summary: Get all quizzes, sorts by updatedAt DESC
  *     tags: [Quiz]
  *     parameters:
  *       - in: query
@@ -79,7 +79,7 @@ quizRouter.get('/:quizId', QuizController.getQuiz);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Quiz'
+ *                 $ref: '#/components/schemas/QuizWithCorrect'
  *       500:
  *         description: Internal server error
  *         content:
@@ -112,7 +112,7 @@ quizRouter.get('/all', QuizController.getQuizzes);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Quiz'
+ *               $ref: '#/components/schemas/QuizWithCorrect'
  *       500:
  *         description: Internal server error
  *         content:
@@ -152,7 +152,7 @@ quizRouter.post('/', QuizController.createQuiz);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Quiz'
+ *               $ref: '#/components/schemas/QuizWithCorrect'
  *       404:
  *         description: Quiz not found
  *         content:
@@ -234,7 +234,7 @@ quizRouter.delete('/:quizId', QuizController.deleteQuiz);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Quiz'
+ *               $ref: '#/components/schemas/QuizWithCorrect'
  *       404:
  *         description: Quiz not found
  *         content:
@@ -260,7 +260,7 @@ quizRouter.patch('/publish/:quizId', QuizController.publishQuiz);
  * @swagger
  * components:
  *   schemas:
- *     Quiz:
+ *     QuizWithCorrect:
  *       type: object
  *       properties:
  *         id:
@@ -280,8 +280,8 @@ quizRouter.patch('/publish/:quizId', QuizController.publishQuiz);
  *         questions:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Question'
- *     Question:
+ *             $ref: '#/components/schemas/QuestionWithCorrect'
+ *     QuestionWithCorrect:
  *       type: object
  *       properties:
  *         id:
@@ -299,8 +299,8 @@ quizRouter.patch('/publish/:quizId', QuizController.publishQuiz);
  *         answers:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Answer'
- *     Answer:
+ *             $ref: '#/components/schemas/AnswerWithCorrect'
+ *     AnswerWithCorrect:
  *       type: object
  *       properties:
  *         id:

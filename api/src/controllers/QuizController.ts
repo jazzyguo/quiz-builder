@@ -66,7 +66,9 @@ export class QuizController {
         try {
             const { quizId } = req.params;
 
-            const quiz = await QuizRepository.findByIdWithAnswerIsCorrect(quizId);
+            const quiz = await QuizRepository.findByIdWithAnswerIsCorrect(
+                quizId
+            );
 
             if (!quiz) {
                 return res.status(404).json({ error: 'Quiz not found' });
@@ -82,8 +84,11 @@ export class QuizController {
     public static async getQuizzes(req: Request, res: Response) {
         try {
             const { userId } = req;
+            const { isPublished } = req.query;
 
-            const quizzes = await QuizRepository.findAllByUserId(userId);
+            const quizzes = await QuizRepository.findAllByUserId(userId, {
+                ...(isPublished ? { isPublished: isPublished === 'true' } : {}),
+            });
 
             return res.status(200).json(quizzes);
         } catch (error) {

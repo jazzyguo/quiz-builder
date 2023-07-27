@@ -1,6 +1,8 @@
 import { Transaction } from 'sequelize';
-import { Quiz } from '../models';
-import { QuizDTO } from '../controllers/QuizController';
+import { Question, Quiz } from '../models';
+import { QuestionDTO, QuizDTO } from '../controllers/QuizController';
+import { QuestionRepository } from './QuestionRepository';
+import { QuestionService } from '../services/QuestionService';
 
 export class QuizRepository {
     public static async create(
@@ -42,8 +44,12 @@ export class QuizRepository {
         return await Quiz.findOne({ where: { id } });
     }
 
-    public static async findAllByUserId(userId: string): Promise<Quiz[]> {
-        return await Quiz.findAll({ where: { userId } });
+    // filter with isPublished and sort by updatedAt DESC
+    public static async findAllByUserId(
+        userId: string,
+        where: Partial<Quiz>
+    ): Promise<Quiz[]> {
+        return await Quiz.findAll({ where: { ...where, userId } });
     }
 
     public static async findByIdWithAnswerIsCorrect(
@@ -78,5 +84,28 @@ export class QuizRepository {
             },
         });
         return !!quiz;
+    }
+
+    public static async addQuestionsWithAnswers(
+        quizId: string,
+        questions: QuestionDTO[],
+        transaction?: Transaction
+    ): Promise<void> {
+        for (const questionDto of questions) {
+            const question: Question = await QuestionRepository.create(
+                {
+                    text: questionDto.text,
+                    type: QuestionService.getQuestionType(questionDto),
+                    quizId: quizId,
+                },
+                transaction
+            );
+
+            await QuestionRepository.addAnswers(
+                question.id,
+                questionDto.answers,
+                transaction
+            );
+        }
     }
 }

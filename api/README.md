@@ -1,5 +1,8 @@
 API built on nodejs/express, sequelize with postgresql, docker
 
+swagger set up at `/api-docs`
+
+`docker-compose up` to run api dev server
 `NPM_SCRIPT=test docker-compose up` to run tests
 
 ```

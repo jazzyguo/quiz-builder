@@ -1,5 +1,7 @@
 import { Transaction } from 'sequelize';
 import { Question } from '../models';
+import { AnswerRepository } from '../repositories';
+import { AnswerDTO } from '../controllers/QuizController';
 
 export class QuestionRepository {
     public static async create(
@@ -19,5 +21,22 @@ export class QuestionRepository {
 
     public static async findByQuizId(quizId): Promise<Question[]> {
         return await Question.findAll({ where: { quizId } });
+    }
+
+    public static async addAnswers(
+        questionId: string,
+        answers: AnswerDTO[],
+        transaction?: Transaction
+    ): Promise<void> {
+        for (const answerDTO of answers) {
+            await AnswerRepository.create(
+                {
+                    text: answerDTO.text,
+                    isCorrect: answerDTO.isCorrect,
+                    questionId: questionId,
+                },
+                transaction
+            );
+        }
     }
 }

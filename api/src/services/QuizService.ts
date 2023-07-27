@@ -1,12 +1,10 @@
-import { Transaction } from 'sequelize';
-import { QuizDTO, QuestionDTO } from '../controllers/QuizController';
+import { QuizDTO } from '../controllers/QuizController';
 import {
     GetQuizResultsDTO,
     QuizResults,
 } from '../controllers/PermaLinkController';
-import { Question, Quiz } from '../models';
+import { Quiz } from '../models';
 import { QuizRepository, QuestionRepository } from '../repositories';
-import { QuestionService } from './QuestionService';
 import { sequelize } from '../sequelize';
 
 /**
@@ -34,7 +32,11 @@ export class QuizService {
                 transaction
             );
 
-            await this.addQuestions(quiz.id, questions, transaction);
+            await QuizRepository.addQuestionsWithAnswers(
+                quiz.id,
+                questions,
+                transaction
+            );
 
             await transaction.commit();
 
@@ -81,7 +83,11 @@ export class QuizService {
             await QuestionRepository.deleteByQuizId(quizId, transaction);
 
             // readd questions/answers
-            await this.addQuestions(quizId, questions, transaction);
+            await QuizRepository.addQuestionsWithAnswers(
+                quizId,
+                questions,
+                transaction
+            );
 
             await transaction.commit();
 
@@ -92,29 +98,6 @@ export class QuizService {
         } catch (error) {
             await transaction.rollback();
             throw error;
-        }
-    }
-
-    public static async addQuestions(
-        quizId: string,
-        questions: QuestionDTO[],
-        transaction?: Transaction
-    ): Promise<void> {
-        for (const questionDto of questions) {
-            const question: Question = await QuestionRepository.create(
-                {
-                    text: questionDto.text,
-                    type: QuestionService.getQuestionType(questionDto),
-                    quizId: quizId,
-                },
-                transaction
-            );
-
-            await QuestionService.addAnswers(
-                question.id,
-                questionDto.answers,
-                transaction
-            );
         }
     }
 
