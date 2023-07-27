@@ -16,7 +16,7 @@ type Props = {
     user: User
 };
 
-const UserMenuList = ({ user }: Props) => {
+const _UserMenuList = ({ user }: Props) => {
     const router = useRouter();
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -82,4 +82,4 @@ const UserMenuList = ({ user }: Props) => {
     );
 };
 
-export const MemoizedUserMenuList = memo(UserMenuList)
+export const UserMenuList = memo(_UserMenuList)

@@ -8,7 +8,7 @@ type Props = {
     error?: null | string;
 };
 
-const LoginForm = ({
+const _LoginForm = ({
     type = "signin",
     setPassword,
     setEmail,
@@ -57,4 +57,4 @@ const LoginForm = ({
     );
 };
 
-export const MemoizedLoginForm = memo(LoginForm)
+export const LoginForm = memo(_LoginForm)

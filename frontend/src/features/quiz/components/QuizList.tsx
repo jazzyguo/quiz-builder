@@ -1,5 +1,9 @@
+import { memo, useCallback } from "react";
+import { useRouter } from "next/navigation";
+
 import { Quiz } from "@/types"
 import { QuizListItem } from './QuizListItem'
+import { useDeleteQuiz } from '../api/deleteQuiz'
 
 type Props = {
     quizzes?: Quiz[]
@@ -11,22 +15,34 @@ type Props = {
  * Published quizzes allow the user to copy the permalink url 
  * Both types can be deleted
  */
-export const QuizList = ({ quizzes = [] }: Props) => {
-    const handleQuizEdit = () => {
+const _QuizList = ({ quizzes = [] }: Props) => {
+    const router = useRouter()
 
-    }
+    const { mutate: deleteQuiz } = useDeleteQuiz()
 
-    const handleQuizDelete = () => {
+    const handleQuizEdit = useCallback((quizId: string) => {
+        router.push(`/quiz/edit/${quizId}`)
+    }, [])
 
-    }
-
-    const handleCopyPermalinkUrl = () => {
-
-    }
+    const handleQuizDelete = useCallback((quizId: string, isPublished: boolean) => {
+        const shouldDelete = window.confirm("Are you sure you want to delete this quiz?");
+        if (shouldDelete) {
+            deleteQuiz({ quizId, isPublished });
+        }
+    }, [])
 
     return (
         <div className="flex flex-col max-w-screen-sm m-auto">
-            {quizzes.map(quiz => <QuizListItem key={quiz.id} quiz={quiz} />)}
+            {quizzes.map(quiz =>
+                <QuizListItem
+                    key={quiz.id}
+                    quiz={quiz}
+                    handleEdit={handleQuizEdit}
+                    handleDelete={handleQuizDelete}
+                />
+            )}
         </div>
     )
 }
+
+export const QuizList = memo(_QuizList)

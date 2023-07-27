@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { FullScreenLoading } from "@/components/FullScreenLoading";
 import { Quiz } from "@/types";
 import { MAX_QUESTIONS } from "@/config";
-import { MemoizedQuestion } from './Question'
+import { Question } from './Question'
 import { useCreateQuiz } from "../api/createQuiz";
 
 /**
@@ -127,7 +127,7 @@ export const QuizForm = ({
                 />
             </div>
             {questions.map((question, questionIndex) => (
-                <MemoizedQuestion
+                <Question
                     questions={questions}
                     questionIndex={questionIndex}
                     key={question.id}

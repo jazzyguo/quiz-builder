@@ -18,7 +18,7 @@ type Props = {
     register: any;
 }
 
-const Question = ({
+const _Question = ({
     questions,
     questionIndex,
     handleDelete,
@@ -42,7 +42,7 @@ const Question = ({
     const answers = useWatch({
         control,
         name: answerFieldName,
-    })
+    }) || []
 
     const canAddMoreAnswers = answers.length < MAX_ANSWERS
     const canDeleteAnswers = answers.length > 1
@@ -168,4 +168,4 @@ const Question = ({
     )
 }
 
-export const MemoizedQuestion = memo(Question)
+export const Question = memo(_Question)

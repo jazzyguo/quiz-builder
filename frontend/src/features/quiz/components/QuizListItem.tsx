@@ -1,12 +1,18 @@
-import { Quiz } from "@/types"
+import { memo, useCallback, useEffect, useState } from "react";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import Tooltip from '@mui/material/Tooltip';
 
+import { Quiz } from "@/types"
+
 type Props = {
-    quiz: Quiz
+    quiz: Quiz;
+    handleEdit: (quizId: string) => void;
+    handleDelete: (quizId: string, isPublished: boolean) => void;
 }
 
 const CTAStyles = {
@@ -16,8 +22,32 @@ const CTAStyles = {
     },
 }
 
-export const QuizListItem = ({ quiz }: Props) => {
+const _QuizListItem = ({
+    quiz,
+    handleEdit,
+    handleDelete,
+}: Props) => {
     const { isPublished, id, permalinkId, title, } = quiz
+
+    const [copied, setCopied] = useState<boolean>(false);
+
+    const shareUrl = permalinkId && `${process.env.NEXT_PUBLIC_BASE_URL}/permalink/${permalinkId}`
+
+    // copied text lasts 3 seconds
+    useEffect(() => {
+        if (copied) {
+            setTimeout(() => setCopied(false), 3000)
+        }
+    }, [copied])
+
+    const handleCopy = useCallback(() => {
+        setCopied(true)
+    }, [])
+
+    if (!id) {
+        return null
+    }
+
     return (
         <div
             className="mb-8 bg-secondary p-6 border-box flex justify-between"
@@ -27,7 +57,7 @@ export const QuizListItem = ({ quiz }: Props) => {
                     <Tooltip title="Edit Quiz">
                         <EditIcon
                             sx={CTAStyles}
-                            onClick={() => console.log('edit', id)}
+                            onClick={() => handleEdit(id)}
                             data-testid="edit-quiz"
                         />
                     </Tooltip>
@@ -37,11 +67,12 @@ export const QuizListItem = ({ quiz }: Props) => {
                 <h3 className="my-0 ml-4">{title}</h3>
             </div>
             <div className="flex">
-                {isPublished && permalinkId &&
-                    <Tooltip title="Click to copy share url">
+                {copied && <span className="mr-4 text-[#90caf9]">Copied</span>}
+                {isPublished && shareUrl &&
+                    <CopyToClipboard text={shareUrl}>
                         <div
                             className="flex hover:opacity-50 cursor-pointer mr-8"
-                            onClick={() => console.log('copy url', permalinkId)}
+                            onClick={handleCopy}
                         >
                             <span className="mr-2">Share url</span>
                             <ContentCopyIcon
@@ -49,12 +80,12 @@ export const QuizListItem = ({ quiz }: Props) => {
                                 data-testid="copy-quiz-share-url"
                             ></ContentCopyIcon>
                         </div>
-                    </Tooltip>
+                    </CopyToClipboard>
                 }
                 <Tooltip title="Delete Quiz">
                     <CloseIcon
                         sx={CTAStyles}
-                        onClick={() => console.log('deleting', id)}
+                        onClick={() => handleDelete(id, isPublished)}
                         data-testid="delete-quiz"
                     />
                 </Tooltip>
@@ -62,3 +93,5 @@ export const QuizListItem = ({ quiz }: Props) => {
         </div >
     )
 }
+
+export const QuizListItem = memo(_QuizListItem)

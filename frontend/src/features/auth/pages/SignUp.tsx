@@ -4,7 +4,7 @@ import signUp from "@/firebase/auth/signup";
 import { UserCredential } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-import { MemoizedLoginForm } from "../components/LoginForm";
+import { LoginForm } from "../components/LoginForm";
 
 const errorMessages: {
     [key: string]: string
@@ -37,7 +37,7 @@ export const SignUpPage = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <MemoizedLoginForm
+            <LoginForm
                 onSubmit={onSubmit}
                 setEmail={setEmail}
                 setPassword={setPassword}

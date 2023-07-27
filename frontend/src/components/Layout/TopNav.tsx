@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { useAuth } from "@/contexts/AuthContext";
 import { LoginButton, SignupButton } from "@/features/auth";
-import { MemoizedUserMenuList } from "@/components/UserMenuList";
+import { UserMenuList } from "@/components/UserMenuList";
 
 const TopNav = () => {
     const { user } = useAuth();
@@ -30,7 +30,7 @@ const TopNav = () => {
                         </>
                     )
                 ) : (
-                    <MemoizedUserMenuList user={user} />
+                    <UserMenuList user={user} />
                 )}
             </div>
 

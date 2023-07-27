@@ -3,7 +3,7 @@ import Link from "next/link";
 import signIn from "@/firebase/auth/signin";
 import { useRouter } from "next/navigation";
 
-import { MemoizedLoginForm } from "../components/LoginForm";
+import { LoginForm } from "../components/LoginForm";
 
 export const SignInPage = () => {
     const [email, setEmail] = useState("");
@@ -27,7 +27,7 @@ export const SignInPage = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <MemoizedLoginForm
+            <LoginForm
                 error={loginError}
                 onSubmit={onSubmit}
                 setEmail={setEmail}
