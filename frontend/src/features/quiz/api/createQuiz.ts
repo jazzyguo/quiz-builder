@@ -19,10 +19,10 @@ type useCreateQuizOptions = {
     config?: MutationConfig<typeof createQuiz>;
 };
 
-export const useCreateQuiz = ({ config }: useCreateQuizOptions = {}) => {
-    return useMutation({
+export const useCreateQuiz = ({ config }: useCreateQuizOptions = {}) =>
+    useMutation({
         onSuccess: (newQuiz) => {
-            // depending on if the quiz was published or not, append shift it into the appropriate store
+            // depending on if the quiz was published or not, add it into the appropriate store at the first index
             // only do this if we already have fetched the lists because otherwise we could run into the issue
             // of having only [newQuiz] if the lists were never fetched, making it hard to invalidate w/o page refresh
             const queryKey: QueryKey = [
@@ -43,4 +43,3 @@ export const useCreateQuiz = ({ config }: useCreateQuizOptions = {}) => {
         ...config,
         mutationFn: createQuiz,
     });
-};

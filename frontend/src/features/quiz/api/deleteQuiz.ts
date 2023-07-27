@@ -22,8 +22,8 @@ type useDeleteQuizOptions = {
     config?: MutationConfig<typeof deleteQuiz>;
 };
 
-export const useDeleteQuiz = ({ config }: useDeleteQuizOptions = {}) => {
-    return useMutation({
+export const useDeleteQuiz = ({ config }: useDeleteQuizOptions = {}) =>
+    useMutation({
         onSuccess: (
             isDeleted: boolean,
             { quizId, isPublished }: DeleteQuizDTO
@@ -50,4 +50,3 @@ export const useDeleteQuiz = ({ config }: useDeleteQuizOptions = {}) => {
         ...config,
         mutationFn: deleteQuiz,
     });
-};

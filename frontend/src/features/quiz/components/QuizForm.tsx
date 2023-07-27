@@ -9,8 +9,9 @@ import { useRouter } from "next/navigation";
 import { FullScreenLoading } from "@/components/FullScreenLoading";
 import { Quiz } from "@/types";
 import { MAX_QUESTIONS } from "@/config";
-import { Question } from './Question'
+import { QuestionForm } from './QuestionForm'
 import { useCreateQuiz } from "../api/createQuiz";
+import { useUpdateQuiz } from "../api/updateQuiz";
 
 /**
  * Form functions under these guidelines - 
@@ -59,6 +60,7 @@ export const QuizForm = ({
     });
 
     const { mutate: createQuiz, isLoading } = useCreateQuiz()
+    const { mutate: updateQuiz, isLoading: isEditLoading } = useUpdateQuiz(initialValue?.id)
 
     const prevQuestionsLengthRef = useRef(questions.length);
 
@@ -75,11 +77,17 @@ export const QuizForm = ({
     }, [questions])
 
     const submitNewQuiz = async (data: Quiz, publish = false) => {
-        console.log(`${publish ? 'Publishing' : 'Drafting'} quiz`, data);
-        await createQuiz({
+        const formData: Quiz = {
             ...data,
-            isPublished: publish
-        })
+            isPublished: publish,
+        }
+
+        if (initialValue?.id) {
+            await updateQuiz(formData)
+        } else {
+            await createQuiz(formData)
+        }
+
         router.push(`/quiz/${publish ? 'published' : 'drafts'}`)
     }
 
@@ -102,7 +110,7 @@ export const QuizForm = ({
 
     return (
         <form className="flex flex-col">
-            {isLoading && <FullScreenLoading />}
+            {isLoading || isEditLoading && <FullScreenLoading />}
             <div className="mb-8 w-full">
                 <Controller
                     name="title"
@@ -127,7 +135,7 @@ export const QuizForm = ({
                 />
             </div>
             {questions.map((question, questionIndex) => (
-                <Question
+                <QuestionForm
                     questions={questions}
                     questionIndex={questionIndex}
                     key={question.id}

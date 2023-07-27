@@ -7,18 +7,18 @@ import {
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { MAX_ANSWERS } from "@/config";
-import { Question, Quiz } from '@/types';
+import { Answer, Question, Quiz } from '@/types';
 
 type Props = {
     questions: Question[];
     questionIndex: number;
     handleDelete: (index: number) => void;
-    errors: Merge<FieldError, FieldErrorsImpl<Question>>;
+    errors: Merge<FieldError, FieldErrorsImpl<Question & { answers: Answer[] }>>;
     control: Control<Quiz, object>;
     register: any;
 }
 
-const _Question = ({
+const _QuestionForm = ({
     questions,
     questionIndex,
     handleDelete,
@@ -119,6 +119,7 @@ const _Question = ({
                 >
                     <Checkbox
                         color="primary"
+                        checked={answers[answerIndex]?.isCorrect}
                         {...register(
                             `${answerFieldName}.${answerIndex}.isCorrect`,
                             { validate: () => validateAtLeastOneAnswerIsCorrect }
@@ -168,4 +169,4 @@ const _Question = ({
     )
 }
 
-export const Question = memo(_Question)
+export const QuestionForm = memo(_QuestionForm)
