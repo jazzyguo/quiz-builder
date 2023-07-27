@@ -1,5 +1,8 @@
 import { sequelize } from '../../sequelize';
 import { QuizDTO } from '../../controllers/QuizController';
+import {
+    GetQuizResultsDTO,
+} from '../../controllers/PermaLinkController';
 import { QuizService } from '../QuizService';
 import {
     QuizRepository,
@@ -17,6 +20,7 @@ describe('QuizService', () => {
     afterAll(async () => {
         await sequelize.close();
     });
+
     describe('createQuiz', () => {
         it('should successfully create a new quiz with a permalinkId if isPublished is true', async () => {
             const quizDTO: QuizDTO = {
@@ -231,6 +235,36 @@ describe('QuizService', () => {
             );
         });
 
+        it('should fail on trying to update a quiz using a bad payload', async () => {
+            const quizDTO: QuizDTO = {
+                title: 'Test Quiz',
+                isPublished: false,
+                questions: [
+                    {
+                        text: 'Question 1',
+                        answers: [
+                            {
+                                text: 'Answer 1',
+                                isCorrect: true,
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            const quiz = await QuizService.createQuiz(userId, quizDTO);
+
+            // @ts-ignore
+            const updateQuizDTO: QuizDTO = {
+                title: 'Test Quiz',
+                isPublished: false,
+            };
+
+            await expect(
+                QuizService.updateQuiz(quiz.id, updateQuizDTO)
+            ).rejects.toThrowError();
+        });
+
         it('should fail on trying to update a nonexisting quiz', async () => {
             const quizDTO: QuizDTO = {
                 title: 'Test Quiz',
@@ -335,6 +369,83 @@ describe('QuizService', () => {
 
             expect(publishedQuiz.isPublished).toBe(true);
             expect(publishedQuiz.permalinkId).toBeTruthy();
+        });
+    });
+
+    describe('getQuizResults', () => {
+        it('should correctly return the results of the quiz', async () => {
+            const quizDTO: QuizDTO = {
+                title: 'Test Quiz',
+                isPublished: true,
+                questions: [
+                    {
+                        text: 'Question 1',
+                        answers: [
+                            {
+                                text: 'Answer 1',
+                                isCorrect: true,
+                            },
+                            {
+                                text: 'Answer 2',
+                                isCorrect: true,
+                            },
+                        ],
+                    },
+                    {
+                        text: 'Question 2',
+                        answers: [
+                            {
+                                text: 'Answer 1',
+                                isCorrect: false,
+                            },
+                            {
+                                text: 'Answer 2',
+                                isCorrect: false,
+                            },
+                            {
+                                text: 'Answer 3',
+                                isCorrect: true,
+                            },
+                        ],
+                    },
+                    {
+                        text: 'Question 3',
+                        answers: [
+                            {
+                                text: 'Answer 1',
+                                isCorrect: true,
+                            },
+                            {
+                                text: 'Answer 1',
+                                isCorrect: false,
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            const quiz = await QuizService.createQuiz(userId, quizDTO);
+
+            // create dto using created quiz question ids and correct answer ids
+            const getQuizResultsDTO: GetQuizResultsDTO = {
+                answers: quiz.questions.map((question) => {
+                    const selectedAnswerIds: string[] = question.answers
+                        .filter((answer) => answer.isCorrect)
+                        .map((answer) => answer.id);
+
+                    return {
+                        questionId: question.id,
+                        selectedAnswerIds,
+                    };
+                }),
+            };
+
+            const quizResults = await QuizService.getQuizResults(
+                quiz.permalinkId,
+                getQuizResultsDTO
+            );
+
+            expect(quizResults.totalCorrect).toBe(3);
         });
     });
 });

@@ -42,16 +42,30 @@ export class QuizRepository {
         return await Quiz.findOne({ where: { id } });
     }
 
-    public static async findByIdAsOwner(id: string): Promise<Quiz | null> {
-        return await Quiz.scope('owner').findOne({
+    public static async findAllByUserId(userId: string): Promise<Quiz[]> {
+        return await Quiz.findAll({ where: { userId } });
+    }
+
+    public static async findByIdWithAnswerIsCorrect(
+        id: string
+    ): Promise<Quiz | null> {
+        return await Quiz.scope('withAnswerIsCorrect').findOne({
             where: { id },
         });
     }
 
-    public static async findByPermalink(
+    public static async findByPermalinkWithoutAnswerIsCorrect(
         permalinkId: string
     ): Promise<Quiz | null> {
-        return await Quiz.scope('guest').findOne({
+        return await Quiz.scope('withoutAnswerIsCorrect').findOne({
+            where: { permalinkId },
+        });
+    }
+
+    public static async findByPermalinkWithAnswerIsCorrect(
+        permalinkId: string
+    ): Promise<Quiz | null> {
+        return await Quiz.scope('withAnswerIsCorrect').findOne({
             where: { permalinkId },
         });
     }

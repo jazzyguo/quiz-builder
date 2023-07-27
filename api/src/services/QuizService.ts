@@ -1,5 +1,9 @@
 import { Transaction } from 'sequelize';
 import { QuizDTO, QuestionDTO } from '../controllers/QuizController';
+import {
+    GetQuizResultsDTO,
+    QuizResults,
+} from '../controllers/PermaLinkController';
 import { Question, Quiz } from '../models';
 import { QuizRepository, QuestionRepository } from '../repositories';
 import { QuestionService } from './QuestionService';
@@ -34,9 +38,8 @@ export class QuizService {
 
             await transaction.commit();
 
-            const quizWithAssociations = await QuizRepository.findByIdAsOwner(
-                quiz.id
-            );
+            const quizWithAssociations =
+                await QuizRepository.findByIdWithAnswerIsCorrect(quiz.id);
 
             return quizWithAssociations;
         } catch (error) {
@@ -82,9 +85,8 @@ export class QuizService {
 
             await transaction.commit();
 
-            const quizWithAssociations = await QuizRepository.findByIdAsOwner(
-                quizId
-            );
+            const quizWithAssociations =
+                await QuizRepository.findByIdWithAnswerIsCorrect(quizId);
 
             return quizWithAssociations;
         } catch (error) {
@@ -158,7 +160,7 @@ export class QuizService {
 
             await transaction.commit();
 
-            const publishedQuiz = await QuizRepository.findById(quizId)
+            const publishedQuiz = await QuizRepository.findById(quizId);
 
             return publishedQuiz;
         } catch (error) {
@@ -181,5 +183,63 @@ export class QuizService {
         }
 
         return result;
+    }
+
+    public static async getQuizResults(
+        permalinkId: string,
+        getQuizResultsDto: GetQuizResultsDTO
+    ): Promise<QuizResults> {
+        const quiz = await QuizRepository.findByPermalinkWithAnswerIsCorrect(
+            permalinkId
+        );
+
+        if (!quiz) {
+            throw new Error(`Quiz ${permalinkId} not found.`);
+        }
+
+        const { answers = [] } = getQuizResultsDto;
+
+        const { totalCorrect, questions }: QuizResults = answers.reduce(
+            (acc, answer) => {
+                // get the question with the correct answers
+                const question = quiz.questions.find(
+                    (q) => q.id === answer.questionId
+                );
+
+                if (question) {
+                    const correctAnswerIds = question.answers
+                        .filter((a) => a.isCorrect)
+                        .map((a) => a.id);
+
+                    const isCorrect =
+                        correctAnswerIds.length ===
+                            answer.selectedAnswerIds.length &&
+                        correctAnswerIds.every((id) =>
+                            answer.selectedAnswerIds.includes(id)
+                        );
+
+                    if (isCorrect) {
+                        acc.totalCorrect++;
+                    }
+
+                    acc.questions.push({
+                        ...question,
+                        correctAnswerIds,
+                        selectedAnswerIds: answer.selectedAnswerIds,
+                    });
+                }
+
+                return acc;
+            },
+            {
+                totalCorrect: 0,
+                questions: [],
+            }
+        );
+
+        return {
+            totalCorrect,
+            questions,
+        };
     }
 }

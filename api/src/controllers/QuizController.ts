@@ -63,15 +63,33 @@ export class QuizController {
     }
 
     public static async getQuiz(req: Request, res: Response) {
-        const { quizId } = req.params;
+        try {
+            const { quizId } = req.params;
 
-        const quiz = await QuizRepository.findByIdAsOwner(quizId);
+            const quiz = await QuizRepository.findByIdWithAnswerIsCorrect(quizId);
 
-        if (!quiz) {
-            return res.status(404).json({ error: 'Quiz not found' });
+            if (!quiz) {
+                return res.status(404).json({ error: 'Quiz not found' });
+            }
+
+            return res.status(200).json(quiz);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Error fetching quiz.' });
         }
+    }
 
-        return res.status(200).json(quiz);
+    public static async getQuizzes(req: Request, res: Response) {
+        try {
+            const { userId } = req;
+
+            const quizzes = await QuizRepository.findAllByUserId(userId);
+
+            return res.status(200).json(quizzes);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Error fetching quizzes.' });
+        }
     }
 
     public static async publishQuiz(req: Request, res: Response) {

@@ -4,6 +4,7 @@ import express, { Application } from 'express';
 import errorHandler from 'strong-error-handler';
 import { quizRouter, permalinkRouter } from './routes';
 import admin from 'firebase-admin';
+import { setupSwagger } from '../swagger';
 
 require('dotenv').config();
 
@@ -14,6 +15,8 @@ admin.initializeApp({
 });
 
 export const app: Application = express();
+
+setupSwagger(app);
 
 app.use(cors());
 app.use(json());
