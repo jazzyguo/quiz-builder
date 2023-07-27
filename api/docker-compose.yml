@@ -15,11 +15,23 @@ services:
         networks:
             - shared-network
         restart: on-failure
+    quiz-builder-database-test:
+        image: postgres
+        container_name: quiz-builder-database-test
+        environment:
+            - POSTGRES_USER=quizbuilder_user
+            - POSTGRES_PASSWORD=quizbuilder_password
+            - POSTGRES_DB=quizbuilder
+        volumes:
+            - database-volume-test:/var/lib/postgresql/data
+        ports:
+            - '5430:5432'
+        networks:
+            - shared-network
+        restart: on-failure
     quiz-builder-api:
         depends_on:
             - quiz-builder-database
-        environment:
-            - NODE_ENV=development
         build:
             context: .
             dockerfile: Dockerfile
@@ -30,13 +42,13 @@ services:
             - '4000'
         ports:
             - '4000:4000'
-        command: npm run dev
+        command: sh -c "npm run $NPM_SCRIPT"
         networks:
             - shared-network
-        restart: on-failure
 
 volumes:
     database-volume:
+    database-volume-test:
 
 networks:
     shared-network:

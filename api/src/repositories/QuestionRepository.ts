@@ -16,4 +16,8 @@ export class QuestionRepository {
     ): Promise<void> {
         await Question.destroy({ where: { quizId }, transaction });
     }
+
+    public static async findByQuizId(quizId): Promise<Question[]> {
+        return await Question.findAll({ where: { quizId } });
+    }
 }

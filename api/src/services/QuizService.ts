@@ -1,10 +1,5 @@
 import { Transaction } from 'sequelize';
-import {
-    CreateQuizDTO,
-    UpdateQuizDTO,
-    CreateQuestionDTO,
-    UpdateQuestionDTO,
-} from '../controllers/QuizController';
+import { QuizDTO, QuestionDTO } from '../controllers/QuizController';
 import { Question, Quiz } from '../models';
 import { QuizRepository, QuestionRepository } from '../repositories';
 import { QuestionService } from './QuestionService';
@@ -16,20 +11,20 @@ import { sequelize } from '../sequelize';
 export class QuizService {
     public static async createQuiz(
         userId: string,
-        createQuizDTO: CreateQuizDTO
+        createQuizDTO: QuizDTO
     ): Promise<Quiz> {
         const { title, isPublished, questions } = createQuizDTO;
 
         const transaction = await sequelize.transaction();
 
         try {
+            const permalinkId = isPublished ? this.generatePermalinkId() : null;
+
             const quiz: Quiz = await QuizRepository.create(
                 {
                     title,
                     isPublished,
-                    permalinkId: isPublished
-                        ? this.generatePermalinkId()
-                        : null,
+                    permalinkId,
                     userId,
                 },
                 transaction
@@ -55,9 +50,9 @@ export class QuizService {
      */
     public static async updateQuiz(
         quizId: string,
-        updateQuizDTO: UpdateQuizDTO
+        updateQuizDTO: QuizDTO
     ): Promise<Quiz> {
-        const { questions } = updateQuizDTO;
+        const { questions, isPublished } = updateQuizDTO;
 
         const quizToUpdate: Quiz | null = await QuizRepository.findById(quizId);
 
@@ -67,8 +62,17 @@ export class QuizService {
 
         const transaction = await sequelize.transaction();
 
+        const permalinkId = isPublished ? this.generatePermalinkId() : null;
+
         try {
-            await QuizRepository.update(quizId, updateQuizDTO, transaction);
+            await QuizRepository.update(
+                quizId,
+                {
+                    ...updateQuizDTO,
+                    permalinkId,
+                },
+                transaction
+            );
 
             // remove all associated questions/answers
             await QuestionRepository.deleteByQuizId(quizId, transaction);
@@ -91,7 +95,7 @@ export class QuizService {
 
     public static async addQuestions(
         quizId: string,
-        questions: CreateQuestionDTO[] | UpdateQuestionDTO[],
+        questions: QuestionDTO[],
         transaction?: Transaction
     ): Promise<void> {
         for (const questionDto of questions) {
@@ -131,7 +135,37 @@ export class QuizService {
     }
 
     // isPublished field becomes true and permalinkId gets generated for the quiz
-    public static async publishDraftQuiz(quizId: string): Promise<Quiz> {}
+    // avoids just passing isPublished=true to updateQuiz since it rewrites the quiz
+    public static async publishQuiz(quizId: string): Promise<Quiz> {
+        const quizToUpdate: Quiz | null = await QuizRepository.findById(quizId);
+
+        if (!quizToUpdate) {
+            throw new Error(`Quiz ${quizId} not found.`);
+        }
+
+        const transaction = await sequelize.transaction();
+
+        try {
+            await QuizRepository.update(
+                quizId,
+                {
+                    ...quizToUpdate,
+                    isPublished: true,
+                    permalinkId: this.generatePermalinkId(),
+                },
+                transaction
+            );
+
+            await transaction.commit();
+
+            const publishedQuiz = await QuizRepository.findById(quizId)
+
+            return publishedQuiz;
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
+        }
+    }
 
     // random digit alphanumeric string
     public static generatePermalinkId(): string {

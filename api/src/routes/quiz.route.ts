@@ -12,3 +12,4 @@ quizRouter.get('/:quizId', QuizController.getQuiz);
 quizRouter.post('/', QuizController.createQuiz);
 quizRouter.patch('/:quizId', QuizController.updateQuiz);
 quizRouter.delete('/:quizId', QuizController.deleteQuiz);
+quizRouter.patch('/publish/:quizId', QuizController.publishQuiz);

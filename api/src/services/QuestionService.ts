@@ -1,17 +1,10 @@
 import { Transaction } from 'sequelize';
-import {
-    CreateAnswerDTO,
-    CreateQuestionDTO,
-    UpdateAnswerDTO,
-    UpdateQuestionDTO,
-} from '../controllers/QuizController';
+import { AnswerDTO, QuestionDTO } from '../controllers/QuizController';
 import { QuestionType } from '../models';
 import { AnswerRepository } from '../repositories';
 
 export class QuestionService {
-    public static getQuestionType(
-        question: CreateQuestionDTO | UpdateQuestionDTO
-    ): QuestionType {
+    public static getQuestionType(question: QuestionDTO): QuestionType {
         const { answers } = question;
 
         const answerCount = answers.filter((answer) => answer.isCorrect).length;
@@ -29,7 +22,7 @@ export class QuestionService {
 
     public static async addAnswers(
         questionId: string,
-        answers: CreateAnswerDTO[] | UpdateAnswerDTO[],
+        answers: AnswerDTO[],
         transaction?: Transaction
     ): Promise<void> {
         for (const answerDTO of answers) {
@@ -39,7 +32,7 @@ export class QuestionService {
                     isCorrect: answerDTO.isCorrect,
                     questionId: questionId,
                 },
-                transaction,
+                transaction
             );
         }
     }

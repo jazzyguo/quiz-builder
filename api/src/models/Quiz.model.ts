@@ -21,7 +21,7 @@ interface QuizModelAttributes {
 
 interface QuizCreationAttributes extends QuizModelAttributes {}
 
-// We need 2 scopes, 
+// We need 2 scopes,
 // - one for editing the quiz (show answer isCorrect - only the quiz owner can ever access this scope)
 // - and one for taking the quiz (dont show answer isCorrect)
 @Scopes(() => ({
@@ -78,5 +78,5 @@ export class Quiz extends Model<QuizModelAttributes, QuizCreationAttributes> {
     @HasMany(() => Question, {
         onDelete: 'CASCADE',
     })
-    questions!: Question[];
+    questions!: Question;
 }

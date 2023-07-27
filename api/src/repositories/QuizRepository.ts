@@ -1,9 +1,10 @@
 import { Transaction } from 'sequelize';
 import { Quiz } from '../models';
+import { QuizDTO } from '../controllers/QuizController';
 
 export class QuizRepository {
     public static async create(
-        quizData: Partial<Quiz>,
+        quizData: QuizDTO | Partial<Quiz>,
         transaction?: Transaction
     ): Promise<Quiz> {
         return await Quiz.create(quizData, { transaction });
@@ -11,7 +12,7 @@ export class QuizRepository {
 
     public static async update(
         id: string,
-        data: Partial<Quiz>,
+        data: QuizDTO | Partial<Quiz>,
         transaction?: Transaction
     ): Promise<number> {
         const [affectedCount]: [affectedCount: number] = await Quiz.update(

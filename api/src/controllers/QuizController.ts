@@ -1,34 +1,27 @@
 import { Request, Response } from 'express';
 import { QuizService } from '../services/QuizService';
 import { QuizRepository } from '../repositories';
-import { Quiz, Question, Answer } from '../models';
 
-export interface CreateQuizDTO {
+export interface QuizDTO {
     title: string;
     isPublished: boolean;
-    questions: CreateQuestionDTO[];
+    questions: QuestionDTO[];
 }
 
-export interface CreateQuestionDTO {
+export interface QuestionDTO {
     text: string;
-    answers: CreateAnswerDTO[];
+    answers: AnswerDTO[];
 }
 
-export interface CreateAnswerDTO {
+export interface AnswerDTO {
     text: string;
     isCorrect: boolean;
 }
 
-export interface UpdateQuizDTO extends Partial<Quiz> {}
-
-export interface UpdateQuestionDTO extends Partial<Question> {}
-
-export interface UpdateAnswerDTO extends Partial<Answer> {}
-
 export class QuizController {
     public static async createQuiz(req: Request, res: Response) {
         const { userId } = req;
-        const createQuizDTO: CreateQuizDTO = req.body;
+        const createQuizDTO: QuizDTO = req.body;
         try {
             const quiz = await QuizService.createQuiz(userId, createQuizDTO);
             return res.status(201).json(quiz);
@@ -39,7 +32,7 @@ export class QuizController {
     }
 
     public static async updateQuiz(req: Request, res: Response) {
-        const updateQuizDTO: UpdateQuizDTO = req.body;
+        const updateQuizDTO: QuizDTO = req.body;
         const { quizId } = req.params;
         try {
             const quiz = await QuizService.updateQuiz(quizId, updateQuizDTO);
@@ -79,5 +72,20 @@ export class QuizController {
         }
 
         return res.status(200).json(quiz);
+    }
+
+    public static async publishQuiz(req: Request, res: Response) {
+        const { quizId } = req.params;
+        try {
+            const quiz = await QuizService.publishQuiz(quizId);
+            return res.status(200).json(quiz);
+        } catch (error) {
+            console.error(error);
+            if (error.message.includes('not found')) {
+                return res.status(404).json({ error: error.message });
+            } else {
+                return res.status(500).json({ error: 'Error updating quiz.' });
+            }
+        }
     }
 }
