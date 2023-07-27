@@ -39,6 +39,8 @@ export class Answer extends Model<
     @Column(DataType.UUID)
     questionId!: string;
 
-    @BelongsTo(() => Question)
+    @BelongsTo(() => Question, {
+        onDelete: 'CASCADE',
+    })
     question!: Question;
 }

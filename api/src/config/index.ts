@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: __dirname + `/../../.env` });
-
 export const config = {
     PORT: process.env.PORT,
     PG_HOST: process.env.PG_HOST || 'quiz-builder-database',

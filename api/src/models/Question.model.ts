@@ -19,7 +19,7 @@ export enum QuestionType {
 
 interface QuestionModelAttributes {
     id: string;
-    title: string;
+    text: string;
     type: QuestionType;
     quizId: string;
 }
@@ -37,7 +37,7 @@ export class Question extends Model<
     id!: string;
 
     @Column
-    title!: string;
+    text!: string;
 
     @Column({
         type: DataType.ENUM,
@@ -49,9 +49,13 @@ export class Question extends Model<
     @Column(DataType.UUID)
     quizId!: string;
 
-    @BelongsTo(() => Quiz)
+    @BelongsTo(() => Quiz, {
+        onDelete: 'CASCADE',
+    })
     quiz!: Quiz;
 
-    @HasMany(() => Answer)
+    @HasMany(() => Answer, {
+        onDelete: 'CASCADE',
+    })
     answers!: Answer[];
 }
