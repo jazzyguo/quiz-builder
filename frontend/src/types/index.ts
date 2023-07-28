@@ -6,9 +6,11 @@ export type Quiz = {
     isPublished: boolean;
 };
 
+export type QuestionType = 'single-answer' | 'multiple-answers';
+
 export type Question = {
     id?: string;
-    type?: 'single-answer' | 'multiple-answers';
+    type?: QuestionType;
     text: string;
     answers?: Answer[];
 };
@@ -16,5 +18,14 @@ export type Question = {
 export type Answer = {
     id?: string;
     text: string;
-    isCorrect: boolean;
+    isCorrect?: boolean;
+};
+
+export type QuizResults = {
+    totalCorrect: number;
+    questions: {
+        id: string;
+        correctAnswerIds: string[];
+        selectedAnswerIds: string[];
+    }[];
 };

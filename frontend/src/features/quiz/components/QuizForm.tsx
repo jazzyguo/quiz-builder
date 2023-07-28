@@ -20,8 +20,21 @@ import { useUpdateQuiz } from "../api/updateQuiz";
  *  - Questions can be either with a single or multiple correct answers.
  *  - Max question / answer limit
  */
+type DefaultAnswer = {
+    text: string;
+    isCorrect: boolean;
+};
 
-export const defaultQuizValue: Quiz = {
+type DefaultQuestion = {
+    text: string;
+    answers: DefaultAnswer[];
+};
+
+type DefaultQuizValue = Required<Omit<Quiz, 'id' | 'permalinkId'>> & {
+    questions: DefaultQuestion[];
+};
+
+export const defaultQuizValue: DefaultQuizValue = {
     title: "",
     isPublished: false,
     questions: [
@@ -40,6 +53,7 @@ export const QuizForm = ({
     initialValue,
 }: Props) => {
     const router = useRouter()
+    
 
     const {
         control,
@@ -128,7 +142,7 @@ export const QuizForm = ({
                             inputProps={{
                                 style: {
                                     background: 'black',
-                                }
+                                },
                             }}
                         />
                     )}

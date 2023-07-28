@@ -180,13 +180,13 @@ export class QuizService {
             throw new Error(`Quiz ${permalinkId} not found.`);
         }
 
-        const { answers = [] } = getQuizResultsDto;
+        const questionIds = Object.keys(getQuizResultsDto);
 
-        const { totalCorrect, questions }: QuizResults = answers.reduce(
-            (acc, answer) => {
+        const { totalCorrect, questions }: QuizResults = questionIds.reduce(
+            (acc, questionId) => {
                 // get the question with the correct answers
                 const question = quiz.questions.find(
-                    (q) => q.id === answer.questionId
+                    (q) => q.id === questionId
                 );
 
                 if (question) {
@@ -194,11 +194,12 @@ export class QuizService {
                         .filter((a) => a.isCorrect)
                         .map((a) => a.id);
 
+                    const selectedAnswerIds = getQuizResultsDto[questionId];
+
                     const isCorrect =
-                        correctAnswerIds.length ===
-                            answer.selectedAnswerIds.length &&
+                        correctAnswerIds.length === selectedAnswerIds.length &&
                         correctAnswerIds.every((id) =>
-                            answer.selectedAnswerIds.includes(id)
+                            selectedAnswerIds.includes(id)
                         );
 
                     if (isCorrect) {
@@ -206,9 +207,9 @@ export class QuizService {
                     }
 
                     acc.questions.push({
-                        ...question,
+                        id: question.id,
                         correctAnswerIds,
-                        selectedAnswerIds: answer.selectedAnswerIds,
+                        selectedAnswerIds,
                     });
                 }
 

@@ -8,7 +8,6 @@ interface PageParams {
     quizId: string;
 }
 
-
 const Page: NextPage<{ params: PageParams }> = ({ params }) => {
     const { quizId } = params
     return (
@@ -19,6 +18,5 @@ const Page: NextPage<{ params: PageParams }> = ({ params }) => {
         </div>
     )
 }
-
 
 export default withAuth(Page);
