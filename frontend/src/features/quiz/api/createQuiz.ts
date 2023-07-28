@@ -21,6 +21,7 @@ type useCreateQuizOptions = {
 
 export const useCreateQuiz = ({ config }: useCreateQuizOptions = {}) =>
     useMutation({
+        ...config,
         onSuccess: (newQuiz) => {
             // depending on if the quiz was published or not, add it into the appropriate store at the first index
             // only do this if we already have fetched the lists because otherwise we could run into the issue
@@ -40,6 +41,5 @@ export const useCreateQuiz = ({ config }: useCreateQuizOptions = {}) =>
                 ]);
             }
         },
-        ...config,
         mutationFn: createQuiz,
     });

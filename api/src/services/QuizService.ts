@@ -207,7 +207,7 @@ export class QuizService {
                     }
 
                     acc.questions.push({
-                        ...question,
+                        id: question.id,
                         correctAnswerIds,
                         selectedAnswerIds,
                     });

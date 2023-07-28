@@ -6,7 +6,8 @@ import { Button } from "@mui/material";
 import { QuestionTakerForm } from "./QuestionTakerForm";
 
 type Props = {
-    quiz: Quiz
+    quiz: Quiz;
+    handleSubmitQuizResults?: (formData: GetQuizResultsDTO) => void;
 }
 
 export const initialValue: GetQuizResultsDTO = {}
@@ -18,8 +19,8 @@ export const initialValue: GetQuizResultsDTO = {}
  * 
  * Form validation checks that the appropriate amount of answers is designated to each question type
  */
-const _QuizTakerForm = ({ quiz }: Props) => {
-    const { title, questions = [] } = quiz || {}
+const _QuizTakerForm = ({ quiz, handleSubmitQuizResults = () => { } }: Props) => {
+    const { title, questions = [], permalinkId } = quiz || {}
 
     const {
         handleSubmit,
@@ -56,8 +57,10 @@ const _QuizTakerForm = ({ quiz }: Props) => {
         }
     };
 
-    const onSubmit = (formData: GetQuizResultsDTO) => {
-        console.log({ formData })
+    const onSubmit = async (formData: GetQuizResultsDTO) => {
+        if (permalinkId) {
+            await handleSubmitQuizResults(formData)
+        }
     }
 
     return (

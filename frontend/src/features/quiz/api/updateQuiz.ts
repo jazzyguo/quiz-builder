@@ -29,6 +29,7 @@ export const useUpdateQuiz = (
     { config }: useUpdateQuizOptions = {}
 ) =>
     useMutation({
+        ...config,
         onSuccess: (updatedQuiz: Quiz) => {
             const { isPublished } = updatedQuiz;
 
@@ -76,6 +77,5 @@ export const useUpdateQuiz = (
             // update the quiz, quizId query as well
             queryClient.setQueryData(['quiz', quizId], updatedQuiz);
         },
-        ...config,
         mutationFn: (formData: UpdateQuizDTO) => updateQuiz(formData, quizId),
     });
