@@ -1,8 +1,6 @@
 import { sequelize } from '../../sequelize';
 import { QuizDTO } from '../../controllers/QuizController';
-import {
-    GetQuizResultsDTO,
-} from '../../controllers/PermaLinkController';
+import { GetQuizResultsDTO } from '../../controllers/PermaLinkController';
 import { QuizService } from '../QuizService';
 import {
     QuizRepository,
@@ -427,18 +425,17 @@ describe('QuizService', () => {
             const quiz = await QuizService.createQuiz(userId, quizDTO);
 
             // create dto using created quiz question ids and correct answer ids
-            const getQuizResultsDTO: GetQuizResultsDTO = {
-                answers: quiz.questions.map((question) => {
+            const getQuizResultsDTO: GetQuizResultsDTO = quiz.questions.reduce(
+                (acc, question) => {
                     const selectedAnswerIds: string[] = question.answers
                         .filter((answer) => answer.isCorrect)
                         .map((answer) => answer.id);
 
-                    return {
-                        questionId: question.id,
-                        selectedAnswerIds,
-                    };
-                }),
-            };
+                    acc[question.id] = selectedAnswerIds;
+                    return acc;
+                },
+                {}
+            );
 
             const quizResults = await QuizService.getQuizResults(
                 quiz.permalinkId,
