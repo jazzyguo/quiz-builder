@@ -1,7 +1,7 @@
 type SelectedAnswerIds = string[];
 
 export type GetQuizResultsDTO = {
-    [questionId: string]: SelectedAnswerIds;
+    [questionId: string]: SelectedAnswerIds | undefined;
 };
 
 //post /permalink/permalinkId

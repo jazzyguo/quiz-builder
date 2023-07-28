@@ -6,9 +6,11 @@ export type Quiz = {
     isPublished: boolean;
 };
 
+export type QuestionType = 'single-answer' | 'multiple-answers';
+
 export type Question = {
     id?: string;
-    type?: 'single-answer' | 'multiple-answers';
+    type?: QuestionType;
     text: string;
     answers?: Answer[];
 };

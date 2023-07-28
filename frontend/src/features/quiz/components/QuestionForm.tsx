@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from 'react'
-import { Control, useFieldArray, useWatch, Merge, FieldError, FieldErrorsImpl } from "react-hook-form";
+import { Control, useFieldArray, useWatch, Merge, FieldError, FieldErrorsImpl, UseFormRegister } from "react-hook-form";
 import {
     TextField,
     Checkbox,
@@ -15,7 +15,7 @@ type Props = {
     handleDelete?: (index: number) => void;
     errors: Merge<FieldError, FieldErrorsImpl<Question & { answers: Answer[] }>>;
     control: Control<Quiz, object>;
-    register: any;
+    register: UseFormRegister<Quiz>;
 }
 
 const _QuestionForm = ({

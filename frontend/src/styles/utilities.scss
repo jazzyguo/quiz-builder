@@ -47,6 +47,10 @@
             display: flex;
             margin-bottom: 1rem;
             align-items: center;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
 
         &--error {
