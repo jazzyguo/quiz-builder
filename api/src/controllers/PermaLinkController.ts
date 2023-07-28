@@ -2,11 +2,10 @@ import { Request, Response } from 'express';
 import { QuizRepository } from '../repositories';
 import { QuizService } from '../services/QuizService';
 
+type SelectedAnswerIds = string[];
+
 export interface GetQuizResultsDTO {
-    answers: {
-        questionId: string;
-        selectedAnswerIds: string[];
-    }[];
+    [questionId: string]: SelectedAnswerIds;
 }
 
 export interface QuizResults {

@@ -69,7 +69,7 @@ const _QuizListItem = ({
                 </Tooltip>
             </div>
             <div className="flex">
-                {copied && <span className="mr-4 text-[#90caf9]">Copied</span>}
+                {copied && <span className="mr-4 text-blue">Copied</span>}
                 {isPublished && shareUrl &&
                     <CopyToClipboard text={shareUrl}>
                         <div

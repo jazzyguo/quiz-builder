@@ -164,22 +164,10 @@ permalinkRouter.post('/:permalinkId', PermalinkController.getQuizResults);
  *     GetQuizResultsDTO:
  *       type: object
  *       properties:
- *         answers:
+ *         [questionId]:
  *           type: array
  *           items:
- *             type: object
- *             properties:
- *               questionId:
- *                 type: string
- *               selectedAnswerIds:
- *                 type: array
- *                 items:
- *                   type: string
- *             required:
- *               - questionId
- *               - selectedAnswerIds
- *       required:
- *         - answers
+ *             type: string
  *
  *     QuizResults:
  *       type: object
