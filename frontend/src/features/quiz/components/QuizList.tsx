@@ -33,6 +33,11 @@ const _QuizList = ({ quizzes = [] }: Props) => {
 
     return (
         <div className="flex flex-col max-w-screen-sm m-auto">
+            {!quizzes.length &&
+                <div className="text-center mt-8">
+                    You do not have any quizzes
+                </div>
+            }
             {quizzes.map(quiz =>
                 <QuizListItem
                     key={quiz.id}
