@@ -76,7 +76,9 @@ const _QuizListItem = ({
                             className="flex hover:opacity-50 cursor-pointer mr-8"
                             onClick={handleCopy}
                         >
-                            <span className="mr-2">Share url</span>
+                            {!copied &&
+                                <span className="mr-2">Share url</span>
+                            }
                             <ContentCopyIcon
                                 sx={CTAStyles}
                                 data-testid="copy-quiz-share-url"
