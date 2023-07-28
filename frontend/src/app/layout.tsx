@@ -1,6 +1,6 @@
 "use client";
 
-import './globals.css'
+import './globals.scss'
 import { darkTheme } from "@/theme";
 import { Roboto } from "next/font/google";
 

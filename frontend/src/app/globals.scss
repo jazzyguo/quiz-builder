@@ -1,6 +1,6 @@
-@import '../styles/base.css';
+@import '../styles/base.scss';
 @tailwind components;
-@import '../styles/utilities.css';
+@import '../styles/utilities.scss';
 
 :root {
     --foreground-rgb: 0, 0, 0;

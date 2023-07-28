@@ -49,7 +49,13 @@ export class QuizRepository {
         userId: string,
         where: Partial<Quiz>
     ): Promise<Quiz[]> {
-        return await Quiz.findAll({ where: { ...where, userId } });
+        return await Quiz.findAll({
+            where: {
+                ...where,
+                userId,
+            },
+            order: [['updatedAt', 'DESC']]
+        });
     }
 
     public static async findByIdWithAnswerIsCorrect(

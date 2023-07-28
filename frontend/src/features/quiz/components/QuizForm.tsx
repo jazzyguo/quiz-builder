@@ -20,8 +20,7 @@ import { useUpdateQuiz } from "../api/updateQuiz";
  *  - Questions can be either with a single or multiple correct answers.
  *  - Max question / answer limit
  */
-
-export const defaultQuizValue: Quiz = {
+export const defaultQuizValue: Required<Omit<Quiz, 'id' | 'permalinkId'>> = {
     title: "",
     isPublished: false,
     questions: [
@@ -128,7 +127,7 @@ export const QuizForm = ({
                             inputProps={{
                                 style: {
                                     background: 'black',
-                                }
+                                },
                             }}
                         />
                     )}

@@ -12,7 +12,7 @@ import { Answer, Question, Quiz } from '@/types';
 type Props = {
     questions: Question[];
     questionIndex: number;
-    handleDelete: (index: number) => void;
+    handleDelete?: (index: number) => void;
     errors: Merge<FieldError, FieldErrorsImpl<Question & { answers: Answer[] }>>;
     control: Control<Quiz, object>;
     register: any;
@@ -21,7 +21,7 @@ type Props = {
 const _QuestionForm = ({
     questions,
     questionIndex,
-    handleDelete,
+    handleDelete = () => { },
     errors,
     control,
     register,
@@ -73,16 +73,9 @@ const _QuestionForm = ({
     return (
         <div
             className={`
-                bg-secondary 
-                mb-6 
-                p-6 
-                rounded-lg 
-                relative 
+                question-container
                 ${canDeleteQuestions && 'pt-14'}
-                ${atLeastOneAnswerIsCorrectError
-                    ? 'border border-solid border-red-500'
-                    : 'border-box'
-                }
+                ${atLeastOneAnswerIsCorrectError && 'question-container--error'}
             `}
         >
             {canDeleteQuestions &&
@@ -115,7 +108,7 @@ const _QuestionForm = ({
             {answerFields.map((answer, answerIndex) => (
                 <div
                     key={answer.id}
-                    className="flex mb-4 items-center"
+                    className="question-container_answer"
                 >
                     <Checkbox
                         color="primary"

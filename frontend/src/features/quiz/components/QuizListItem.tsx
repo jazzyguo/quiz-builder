@@ -64,7 +64,9 @@ const _QuizListItem = ({
                     :
                     <BookmarkAddedIcon data-testid="published-quiz" />
                 }
-                <h3 className="my-0 ml-4">{title}</h3>
+                <Tooltip title={title}>
+                    <h3 className="my-0 ml-4 truncate max-w-[350px]">{title}</h3>
+                </Tooltip>
             </div>
             <div className="flex">
                 {copied && <span className="mr-4 text-[#90caf9]">Copied</span>}

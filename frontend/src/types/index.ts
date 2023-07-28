@@ -18,3 +18,12 @@ export type Answer = {
     text: string;
     isCorrect: boolean;
 };
+
+export type QuizResults = {
+    totalCorrect: number;
+    questions: {
+        id: string;
+        correctAnswerIds: string[];
+        selectedAnswerIds: string[];
+    }[];
+};
