@@ -20,7 +20,21 @@ import { useUpdateQuiz } from "../api/updateQuiz";
  *  - Questions can be either with a single or multiple correct answers.
  *  - Max question / answer limit
  */
-export const defaultQuizValue: Required<Omit<Quiz, 'id' | 'permalinkId'>> = {
+type DefaultAnswer = {
+    text: string;
+    isCorrect: boolean;
+};
+
+type DefaultQuestion = {
+    text: string;
+    answers: DefaultAnswer[];
+};
+
+type DefaultQuizValue = Required<Omit<Quiz, 'id' | 'permalinkId'>> & {
+    questions: DefaultQuestion[];
+};
+
+export const defaultQuizValue: DefaultQuizValue = {
     title: "",
     isPublished: false,
     questions: [

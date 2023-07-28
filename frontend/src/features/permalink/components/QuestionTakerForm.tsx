@@ -44,7 +44,6 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
 
     return questionId && (
         <div
-            key={questionId}
             className={`question-container ${errorMessage && 'question-container--error'}`}
         >
             <h3 className="font-bold mt-0 mb-2">

@@ -35,20 +35,25 @@ const _QuizTakerForm = ({ quiz }: Props) => {
         control,
     });
 
-    const handleCheckboxChange = (questionId: string, answerId: string) => {
+    const handleCheckboxChange = (questionId: string, answerId: string, questionIndex: number) => {
         const selectedAnswerIds = formValues[questionId] || []
 
-        const isChecked = selectedAnswerIds.includes(answerId)
+        const isValidAnswerId = !!questions[questionIndex].answers?.find(answer => answer.id === answerId)
 
-        let updatedAnswerIds = [...selectedAnswerIds]
+        // check that answerId is a valid id
+        if (isValidAnswerId) {
+            const isChecked = selectedAnswerIds.includes(answerId)
 
-        if (isChecked) {
-            updatedAnswerIds = selectedAnswerIds.filter((id) => id !== answerId);
-        } else {
-            updatedAnswerIds = [...selectedAnswerIds, answerId];
+            let updatedAnswerIds = [...selectedAnswerIds]
+
+            if (isChecked) {
+                updatedAnswerIds = selectedAnswerIds.filter((id) => id !== answerId);
+            } else {
+                updatedAnswerIds = [...selectedAnswerIds, answerId];
+            }
+
+            setValue(questionId, updatedAnswerIds);
         }
-
-        setValue(questionId, updatedAnswerIds);
     };
 
     const onSubmit = (formData: GetQuizResultsDTO) => {
@@ -61,11 +66,15 @@ const _QuizTakerForm = ({ quiz }: Props) => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <h2 className="text-center mb-10">{title}</h2>
-            {questions.map(question =>
+            {questions.map((question, questionIndex) =>
                 <QuestionTakerForm
+                    key={question.id}
                     question={question}
                     formValues={formValues}
-                    handleCheckboxChange={handleCheckboxChange}
+                    handleCheckboxChange={
+                        (questionId, answerId) =>
+                            handleCheckboxChange(questionId, answerId, questionIndex)
+                    }
                     errors={errors}
                     register={register}
                 />
