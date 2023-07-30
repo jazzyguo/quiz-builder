@@ -1,5 +1,6 @@
 import { memo, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Quiz } from "@/types"
 import { QuizListItem } from './QuizListItem'
@@ -34,8 +35,15 @@ const _QuizList = ({ quizzes = [] }: Props) => {
     return (
         <div className="flex flex-col max-w-screen-sm m-auto">
             {!quizzes.length &&
-                <div className="text-center mt-8">
-                    You do not have any quizzes
+                <div className="text-center mt-4">
+                    <p>You do not have any quizzes.</p>
+                    <p>
+                        {`Create
+                        a new one `}
+                        <Link href="/quiz/create" className="text-blue">
+                            here
+                        </Link>.
+                    </p>
                 </div>
             }
             {quizzes.map(quiz =>
