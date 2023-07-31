@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from "react"
-import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 import { Question } from "@/types"
 import { GetQuizResultsDTO } from "../api/submitQuizResults";
 import { Checkbox } from "@mui/material";
@@ -24,7 +24,7 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
 
     const answersLength = formValues[questionId || '']?.length ?? 0
 
-    // check that depending on the question type, we have at least one or more answers.
+    // check that depending on the question typ e, we have at least one or more answers.
     const validateAnswers = useCallback(() => {
         if (answersLength === 0) {
             return 'At least one answer is required'
@@ -41,12 +41,9 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
     }, [answersLength])
 
     // pulls the error message from one of the nested answers if exists
-    const errorMessage = useMemo(() =>
-        questionId &&
+    const errorMessage = questionId &&
         answers[0]?.id && Object.keys(errors[questionId] || {}).length &&
         errors[questionId][answers[0].id]?.message
-        , [questionId, answers, errors]
-    )
 
     return questionId && (
         <div
