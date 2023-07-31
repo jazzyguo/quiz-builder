@@ -74,7 +74,7 @@ const _QuestionForm = ({
         <div
             className={`
                 question-container
-                ${canDeleteQuestions && 'pt-14'}
+                ${canDeleteQuestions && 'question-container--canDelete'}
                 ${atLeastOneAnswerIsCorrectError && 'question-container--error'}
             `}
         >
