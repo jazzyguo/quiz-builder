@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from "react"
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 import { Question } from "@/types"
 import { GetQuizResultsDTO } from "../api/submitQuizResults";
 import { Checkbox } from "@mui/material";
@@ -8,7 +8,7 @@ type Props = {
     question: Question;
     formValues: GetQuizResultsDTO;
     handleCheckboxChange: (questionId: string, answerId: string) => void;
-    errors: FieldErrors<GetQuizResultsDTO>;
+    errors: { [questionId: string]: { [answerId: string]: FieldError } };
     register: UseFormRegister<GetQuizResultsDTO>
 }
 
@@ -40,7 +40,13 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
         return undefined
     }, [answersLength])
 
-    const errorMessage = errors[questionId || ""]?.message
+    // pulls the error message from one of the nested answers if exists
+    const errorMessage = useMemo(() =>
+        questionId &&
+        answers[0]?.id && Object.keys(errors[questionId] || {}).length &&
+        errors[questionId][answers[0].id]?.message
+        , [questionId, answers, errors]
+    )
 
     return questionId && (
         <div
@@ -69,7 +75,7 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
                             }>
                             <Checkbox
                                 {...register(
-                                    questionId,
+                                    `${questionId}.${answerId}`,
                                     { validate: validateAnswers }
                                 )}
                                 checked={isChecked}
@@ -79,7 +85,7 @@ const _QuestionTakerForm = ({ question, formValues, handleCheckboxChange, errors
                     )
                 )
             })}
-            {errorMessage &&
+            {!!errorMessage &&
                 <div className="text-xs text-red-500">
                     {errorMessage}
                 </div>

@@ -4,6 +4,7 @@ import { QuizTakerForm } from '../QuizTakerForm';
 import { QuestionTakerForm } from '../QuestionTakerForm';
 import { QuestionType } from '@/types';
 import { queryClient } from "@/lib/react-query";
+import { FieldError } from "react-hook-form";
 
 jest.mock('react-hook-form', () => ({
     ...jest.requireActual('react-hook-form'),
@@ -98,9 +99,15 @@ describe('QuestionTakerForm', () => {
 
     it('displays error message when no answers are selected', () => {
         const question = quiz.questions[0];
-        const formValues = {};
-        const errors = {
-            [question.id]: { message: 'At least one answer is required' }
+        const answer = quiz.questions[0].answers[0]
+        const formValues = {
+            [question.id]: []
+        };
+
+        const errors: { [questionId: string]: { [answerId: string]: FieldError } } = {
+            [question.id]: {
+                [answer.id]: { type: 'validate', message: 'At least one answer is required' }
+            }
         };
 
         render(

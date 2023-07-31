@@ -1,6 +1,6 @@
-import { memo } from "react"
+import { memo, useMemo } from "react"
 import { useForm, useWatch } from "react-hook-form";
-import { Quiz } from "@/types"
+import { Question, Quiz } from "@/types"
 import { GetQuizResultsDTO } from "../api/submitQuizResults";
 import { Button } from "@mui/material";
 import { QuestionTakerForm } from "./QuestionTakerForm";
@@ -21,6 +21,17 @@ export const initialValue: GetQuizResultsDTO = {}
  */
 const _QuizTakerForm = ({ quiz, handleSubmitQuizResults = () => { } }: Props) => {
     const { title, questions = [], permalinkId } = quiz || {}
+
+    const initialValue = useMemo(() =>
+        questions.reduce((acc: {
+            [questionId: string]: string[]
+        }, question: Question) => {
+            if (question.id) {
+                acc[question.id] = []
+            }
+            return acc
+        }, {})
+        , [questions])
 
     const {
         handleSubmit,
