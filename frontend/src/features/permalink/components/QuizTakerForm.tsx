@@ -10,8 +10,6 @@ type Props = {
     handleSubmitQuizResults?: (formData: GetQuizResultsDTO) => void;
 }
 
-export const initialValue: GetQuizResultsDTO = {}
-
 /**
  * Renders all question/answers. 
  * Depending on if the question rendered is of type single-answer or multiple-answers,

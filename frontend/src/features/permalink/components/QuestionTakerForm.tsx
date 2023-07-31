@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from "react"
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, FieldErrors, UseFormRegister } from "react-hook-form";
 import { Question } from "@/types"
 import { GetQuizResultsDTO } from "../api/submitQuizResults";
 import { Checkbox } from "@mui/material";
@@ -8,7 +8,7 @@ type Props = {
     question: Question;
     formValues: GetQuizResultsDTO;
     handleCheckboxChange: (questionId: string, answerId: string) => void;
-    errors: { [questionId: string]: { [answerId: string]: FieldError } };
+    errors: { [questionId: string]: { [answerId: string]: FieldError } } | any;
     register: UseFormRegister<GetQuizResultsDTO>
 }
 
